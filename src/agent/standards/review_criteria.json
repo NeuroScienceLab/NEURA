@@ -1,0 +1,134 @@
+{
+  "tool_name": "review_criteria",
+  "description": "MoER通用审查评分标准",
+  "version": "2.0",
+  "plan_review": {
+    "weights": {
+      "completeness": 25,
+      "feasibility": 25,
+      "methodology": 30,
+      "roi_rationale": 20
+    },
+    "required_plan_fields": ["title", "hypothesis", "pipeline", "statistical_methods"],
+    "required_step_fields": ["step", "tool", "params"],
+    "severity_rules": {
+      "missing_required_field": "error",
+      "unknown_tool": "error",
+      "missing_multiple_comparison": "warning",
+      "missing_effect_size": "warning",
+      "small_sample_size": "warning",
+      "missing_hypothesis": "warning",
+      "missing_power_analysis": "info",
+      "missing_exclusion_criteria": "warning",
+      "circular_analysis": "error",
+      "double_dipping": "error"
+    }
+  },
+  "stat_review": {
+    "weights": {
+      "multiple_comparison": 25,
+      "effect_sizes": 20,
+      "assumptions_tested": 25,
+      "sample_adequacy": 15,
+      "result_consistency": 15
+    },
+    "thresholds": {
+      "min_group_n_warning": 10,
+      "min_group_n_error": 5,
+      "success_rate_rejected": 0.3,
+      "success_rate_warning": 0.7
+    }
+  },
+  "code_review": {
+    "weights": {
+      "scientific_correctness": 35,
+      "runtime_safety": 30,
+      "code_quality": 20,
+      "usability": 15
+    }
+  },
+  "report_review": {
+    "weights": {
+      "imrad_structure": 20,
+      "claim_evidence_alignment": 30,
+      "anti_hallucination": 30,
+      "writing_quality": 20
+    },
+    "required_imrad_sections": ["Introduction", "Methods", "Results", "Discussion"],
+    "required_methods_subsections": ["Participants", "Data Acquisition", "Preprocessing", "Statistical Analysis"]
+  },
+  "neuroimaging_criteria": {
+    "motion_thresholds": {
+      "fmri_fd_ideal_mm": 0.2,
+      "fmri_fd_exclude_mm": 0.5,
+      "fmri_fd_scrub_mm": 0.5,
+      "fmri_max_displacement_mm": 3.0,
+      "dwi_max_motion_mm": 2.0,
+      "dwi_outlier_ratio_max": 0.1,
+      "reference": "Power et al. (2012) NeuroImage 59:2142-2154"
+    },
+    "registration_quality": {
+      "nmi_threshold": 0.8,
+      "cross_correlation_min": 0.7,
+      "jacobian_range": [0.01, 100],
+      "reference": "Studholme et al. (1999) Pattern Recognition 32:71-86"
+    },
+    "tissue_segmentation_quality": {
+      "gm_volume_range_ml": [400, 900],
+      "wm_volume_range_ml": [300, 700],
+      "tiv_range_ml": [1000, 1800],
+      "cat12_iqr_min": 70,
+      "euler_number_max_abs": 100,
+      "cortical_thickness_range_mm": [1.0, 4.0],
+      "references": [
+        "Good et al. (2001) NeuroImage 14:21-36",
+        "Rosen et al. (2018) NeuroImage 169:407-418"
+      ]
+    },
+    "diffusion_quality": {
+      "fa_range": [0, 1],
+      "md_range_mm2s": [0.5e-3, 2.5e-3],
+      "cnr_min": 2.0,
+      "min_gradient_directions": 6,
+      "tbss_skeleton_threshold": 0.2,
+      "reference": "Jones et al. (2013) Cortex 49:1845-1859"
+    },
+    "statistical_thresholds": {
+      "cluster_forming_p": 0.001,
+      "cluster_forming_note": "Woo et al. (2014) NeuroImage 91:412-419",
+      "fwe_cluster_p": 0.05,
+      "fdr_q": 0.05,
+      "tfce_note": "TFCE不需要cluster-forming threshold (Smith & Nichols, 2009)",
+      "tfce_reference": "Smith SM, Nichols TE (2009) Threshold-free cluster enhancement, NeuroImage 44:83-98"
+    }
+  },
+  "reporting_guidelines": {
+    "cobidas": {
+      "description": "Committee on Best Practices in Data Analysis and Sharing",
+      "reference": "Nichols et al. (2017) Best practices in data analysis and sharing in neuroimaging using MRI, Nature Neuroscience 20:299-303",
+      "required_items": [
+        "scanner_manufacturer_and_model",
+        "field_strength",
+        "sequence_parameters_TR_TE_FA",
+        "voxel_size",
+        "number_of_slices",
+        "preprocessing_software_and_version",
+        "statistical_model_specification",
+        "multiple_comparison_correction_method",
+        "cluster_forming_threshold",
+        "degrees_of_freedom"
+      ]
+    },
+    "ohbm_best_practices": {
+      "description": "OHBM推荐的神经影像报告规范",
+      "reference": "Poldrack et al. (2008) Guidelines for reporting an fMRI study, NeuroImage 40:409-414",
+      "key_points": [
+        "报告所有对比，不仅是显著结果",
+        "报告效应量和置信区间",
+        "报告头动排除标准和排除人数",
+        "报告ROI选择的先验依据",
+        "避免circular analysis (Kriegeskorte N, Simmons WK, Bellgowan PSF, Baker CI (2009) Circular analysis in systems neuroscience, Nature Neuroscience 12:535-540)"
+      ]
+    }
+  }
+}

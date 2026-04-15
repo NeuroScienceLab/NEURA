@@ -1,0 +1,424 @@
+{
+  "tool_name": "fsl_analysis",
+  "description": "FSL 神经影像分析工具",
+  "version": "2.0",
+  "operations": {
+    "bet": {
+      "description": "脑提取 (Brain Extraction Tool)",
+      "references": ["Smith (2002) Fast robust automated brain extraction, Human Brain Mapping 17:143-155"],
+      "required_input_fields": ["input_files"],
+      "optional_input_fields": ["fractional_intensity", "robust", "reduce_bias", "mask_output"],
+      "expected_output_fields": ["brain_files", "mask_files"],
+      "expected_output_files": [
+        {"pattern": "*_brain.nii.gz", "description": "脑提取结果", "required": true},
+        {"pattern": "*_brain_mask.nii.gz", "description": "脑掩模", "required": true}
+      ],
+      "quality_checks": [
+        {"check": "mask_nonzero_ratio", "params": {"min": 0.2, "max": 0.6}, "description": "掩模非零体素占比在合理范围"},
+        {"check": "value_range", "field": "mask_volume_ml", "params": {"min": 900, "max": 1800}, "description": "脑掩模体积在900-1800mL范围"},
+        {"check": "mask_over_extraction", "description": "检查过度提取 (建议手动检查)"},
+        {"check": "mask_under_extraction", "description": "检查提取不足 (建议手动检查)"}
+      ],
+      "reference_parameters": {
+        "fractional_intensity": {
+          "T1w": 0.5,
+          "DWI": 0.3,
+          "fMRI": 0.3,
+          "default": 0.5
+        },
+        "robust": true,
+        "reduce_bias": true,
+        "note": "-R (robust) 推荐用于T1w; -B (reduce_bias) 推荐用于偏置场明显的数据"
+      },
+      "acceptance_criteria": {
+        "description": "脑提取输出合格判定标准",
+        "pass_conditions": [
+          {"field": "mask_volume_ml", "range": [900, 1800], "severity": "error"},
+          {"field": "nonzero_ratio", "range": [0.3, 0.7], "severity": "error"}
+        ],
+        "fail_conditions": [
+          {"field": "mask_volume_ml", "threshold": 500, "operator": "<", "severity": "error", "action": "flag_over_extraction", "message": "脑掩模体积<500mL，可能过度提取"},
+          {"field": "mask_volume_ml", "threshold": 2500, "operator": ">", "severity": "error", "action": "flag_under_extraction", "message": "脑掩模体积>2500mL，可能提取不足"}
+        ],
+        "warning_conditions": [
+          {"field": "mask_volume_ml", "range_outside": [900, 1800], "severity": "warning", "message": "脑掩模体积在边界范围，建议目视检查"}
+        ]
+      }
+    },
+    "eddy": {
+      "description": "涡流和运动校正",
+      "references": ["Andersson & Sotiropoulos (2016) An integrated approach to correction, NeuroImage 125:1063-1078"],
+      "required_input_fields": ["input_files", "bvecs", "bvals", "mask", "acqp", "index"],
+      "optional_input_fields": ["topup_results", "slm", "repol", "cnr_maps", "residuals"],
+      "expected_output_fields": ["corrected_dwi", "rotated_bvecs"],
+      "expected_output_files": [
+        {"pattern": "*eddy*.nii.gz", "description": "涡流校正后DWI", "required": true},
+        {"pattern": "*rotated_bvecs", "description": "旋转后的bvecs", "required": true},
+        {"pattern": "*.eddy_movement_rms", "description": "运动RMS", "required": false},
+        {"pattern": "*.eddy_restricted_movement_rms", "description": "受限运动RMS", "required": false},
+        {"pattern": "*.eddy_outlier_report", "description": "异常报告", "required": false},
+        {"pattern": "*.eddy_outlier_map", "description": "异常图", "required": false},
+        {"pattern": "*.eddy_cnr_maps.nii.gz", "description": "CNR图", "required": false},
+        {"pattern": "*.eddy_residuals.nii.gz", "description": "残差图", "required": false},
+        {"pattern": "*.qc/", "description": "eddy_quad QC目录", "required": false}
+      ],
+      "quality_checks": [
+        {"check": "motion_threshold", "params": {"max_mm": 2.0, "mean_rms_warn": 1.0}, "description": "最大运动<2mm"},
+        {"check": "outlier_ratio", "params": {"max_ratio": 0.1}, "description": "异常slice比例<10%"},
+        {"check": "value_range", "field": "cnr", "params": {"min": 2.0}, "description": "CNR>2.0"},
+        {"check": "motion_threshold", "params": {"max_mm": 1.5}, "description": "受限运动RMS<1.5mm (shell间对齐)"}
+      ],
+      "reference_parameters": {
+        "repol": true,
+        "cnr_maps": true,
+        "residuals": true,
+        "slm": "linear",
+        "note": "--repol 替换异常slice; --cnr_maps 输出CNR图用于QC"
+      },
+      "acceptance_criteria": {
+        "description": "涡流校正输出合格判定标准",
+        "pass_conditions": [
+          {"field": "mean_motion", "range": [0, 2], "severity": "error"},
+          {"field": "cnr", "range": [2.0, 999], "severity": "error"},
+          {"field": "outlier_ratio", "range": [0, 0.1], "severity": "error"}
+        ],
+        "fail_conditions": [
+          {"field": "mean_motion", "threshold": 3, "operator": ">", "severity": "error", "action": "exclude_subject"}
+        ],
+        "warning_conditions": [
+          {"field": "mean_motion", "threshold": 2, "operator": ">", "severity": "warning", "message": "运动2-3mm，建议检查"},
+          {"field": "cnr", "threshold": 2.0, "operator": "<", "severity": "warning", "message": "CNR偏低(1.5-2.0)"}
+        ]
+      }
+    },
+    "dtifit": {
+      "description": "DTI张量拟合",
+      "references": ["Basser et al. (1994) MR diffusion tensor spectroscopy and imaging, Biophysical Journal 66:259-267"],
+      "required_input_fields": ["input_files", "bvecs", "bvals", "mask"],
+      "expected_output_fields": ["fa_map", "md_map", "ad_map", "rd_map", "eigenvalues", "eigenvectors"],
+      "expected_output_files": [
+        {"pattern": "*_FA.nii.gz", "description": "FA图", "required": true},
+        {"pattern": "*_MD.nii.gz", "description": "MD图", "required": true},
+        {"pattern": "*_L1.nii.gz", "description": "第一特征值(AD)", "required": true},
+        {"pattern": "*_L2.nii.gz", "description": "第二特征值", "required": true},
+        {"pattern": "*_L3.nii.gz", "description": "第三特征值", "required": true},
+        {"pattern": "*_V1.nii.gz", "description": "第一特征向量", "required": false},
+        {"pattern": "*_V2.nii.gz", "description": "第二特征向量", "required": false},
+        {"pattern": "*_V3.nii.gz", "description": "第三特征向量", "required": false},
+        {"pattern": "*_S0.nii.gz", "description": "b=0信号", "required": false},
+        {"pattern": "*_tensor.nii.gz", "description": "张量图", "required": false}
+      ],
+      "quality_checks": [
+        {"check": "value_range", "field": "FA", "params": {"min": 0, "max": 1}, "description": "FA值在[0,1]范围"},
+        {"check": "value_positive", "field": "MD", "description": "MD值为正"},
+        {"check": "value_range", "field": "md_mean", "params": {"min": 0.5e-3, "max": 2.5e-3}, "description": "平均MD在0.5-2.5×10⁻³ mm²/s范围"},
+        {"check": "ad_rd_relationship", "description": "AD应大于RD (建议手动检查)"}
+      ],
+      "reference_parameters": {
+        "note": "至少需要6个非共线梯度方向 + 1个b=0"
+      },
+      "acceptance_criteria": {
+        "description": "DTI张量拟合输出合格判定标准",
+        "pass_conditions": [
+          {"field": "FA", "range": [0, 1], "severity": "error"},
+          {"field": "md_mean", "range": [0.0005, 0.0025], "severity": "error"}
+        ],
+        "fail_conditions": [
+          {"field": "FA", "range_outside": [0, 1], "severity": "error", "message": "FA超出[0,1]范围"},
+          {"field": "md_mean", "range_outside": [0.0005, 0.0025], "severity": "error", "message": "MD超出合理范围"}
+        ],
+        "warning_conditions": [
+          {"check": "ad_le_rd", "severity": "warning", "message": "AD≤RD，可能为灰质或病变区域"}
+        ]
+      }
+    },
+    "mcflirt": {
+      "description": "fMRI头动校正",
+      "references": ["Power et al. (2012) Spurious but systematic correlations in fMRI, NeuroImage 59:2142-2154"],
+      "required_input_fields": ["input_files"],
+      "optional_input_fields": ["reference_volume", "cost_function", "stages"],
+      "expected_output_fields": ["corrected_files", "motion_params", "mean_image"],
+      "expected_output_files": [
+        {"pattern": "*_mcf.nii.gz", "description": "校正后fMRI", "required": true},
+        {"pattern": "*_mcf.par", "description": "运动参数(6列)", "required": true},
+        {"pattern": "*_mcf_mean_reg.nii.gz", "description": "平均图像", "required": false}
+      ],
+      "quality_checks": [
+        {"check": "motion_threshold", "params": {"max_mm": 0.5, "mean_rms_warn": 0.2}, "description": "FD<0.5mm排除, 平均FD<0.2mm理想 (Power et al., 2012)"},
+        {"check": "outlier_ratio", "params": {"max_ratio": 0.2}, "description": "FD>0.5mm帧数<20%"},
+        {"check": "value_range", "field": "tsnr", "params": {"min": 40}, "description": "tSNR>40 (3T典型值)"}
+      ],
+      "reference_parameters": {
+        "cost_function": "normcorr",
+        "stages": 4,
+        "reference_volume": "middle"
+      },
+      "acceptance_criteria": {
+        "description": "fMRI头动校正输出合格判定标准",
+        "pass_conditions": [
+          {"field": "fd_mean", "range": [0, 0.2], "severity": "info"},
+          {"field": "tsnr", "range": [40, 9999], "severity": "error", "note": "3T典型值"}
+        ],
+        "fail_conditions": [
+          {"field": "fd_mean", "threshold": 0.5, "operator": ">", "severity": "error", "action": "exclude_subject"}
+        ],
+        "warning_conditions": [
+          {"field": "tsnr", "threshold": 40, "operator": "<", "severity": "warning", "message": "tSNR偏低(20-40)，数据质量可能受影响"}
+        ]
+      }
+    },
+    "slicetimer": {
+      "description": "层时间校正",
+      "required_input_fields": ["input_files", "tr"],
+      "optional_input_fields": ["slice_order", "direction", "custom_timings"],
+      "expected_output_fields": ["corrected_files"],
+      "expected_output_files": [
+        {"pattern": "*_st.nii.gz", "description": "校正后fMRI", "required": true}
+      ],
+      "quality_checks": [
+        {"check": "value_range", "field": "tr", "params": {"min": 0.3, "max": 5.0}, "description": "TR在0.3-5.0s范围"},
+        {"check": "dimensions_preserved", "description": "校正后维度与输入一致"}
+      ],
+      "reference_parameters": {
+        "direction": 3,
+        "note": "多频带采集(TR<1s)时效果有限"
+      },
+      "acceptance_criteria": {
+        "description": "层时间校正输出合格判定标准",
+        "pass_conditions": [
+          {"field": "tr", "range": [0.3, 5.0], "severity": "error"},
+          {"check": "dimensions_preserved", "severity": "error"}
+        ],
+        "fail_conditions": [],
+        "warning_conditions": []
+      }
+    },
+    "flirt": {
+      "description": "线性配准 (FLIRT)",
+      "references": ["Jenkinson & Smith (2001) A global optimisation method for robust affine registration, Medical Image Analysis 5:143-156"],
+      "required_input_fields": ["input_files", "reference"],
+      "optional_input_fields": ["cost_function", "dof", "searchrx", "interp"],
+      "expected_output_fields": ["registered_files", "transformation_matrix"],
+      "expected_output_files": [
+        {"pattern": "*_flirt.nii.gz", "description": "配准后图像", "required": true},
+        {"pattern": "*.mat", "description": "变换矩阵", "required": true}
+      ],
+      "quality_checks": [
+        {"check": "file_readable", "description": "配准结果可读"},
+        {"check": "value_range", "field": "cost_function_value", "params": {"max": 0.5}, "description": "代价函数值合理"},
+        {"check": "transformation_matrix_valid", "description": "变换矩阵行列式≈1 (建议手动检查)"}
+      ],
+      "reference_parameters": {
+        "cost_function_options": {
+          "intra_modal": "corratio",
+          "inter_modal_T1_T2": "mutualinfo",
+          "inter_modal_EPI_T1": "bbr",
+          "default": "corratio"
+        },
+        "dof": 12,
+        "interp": "trilinear"
+      },
+      "acceptance_criteria": {
+        "description": "线性配准输出合格判定标准",
+        "pass_conditions": [
+          {"field": "matrix_determinant", "range": [0.9, 1.1], "severity": "error", "note": "行列式≈1(±0.1)"}
+        ],
+        "fail_conditions": [
+          {"field": "matrix_determinant", "threshold": 0.5, "operator": "<", "severity": "error", "message": "变换矩阵行列式<0.5，配准可能失败"},
+          {"field": "matrix_determinant", "threshold": 2.0, "operator": ">", "severity": "error", "message": "变换矩阵行列式>2.0，配准可能失败"}
+        ],
+        "warning_conditions": []
+      }
+    },
+    "fnirt": {
+      "description": "非线性配准 (FNIRT)",
+      "references": ["Andersson et al. (2007) Non-linear registration aka spatial normalisation, FMRIB Technical Report TR07JA2"],
+      "required_input_fields": ["input_files", "reference", "affine_matrix"],
+      "optional_input_fields": ["config", "warp_resolution"],
+      "expected_output_fields": ["warped_image", "warp_coefficients", "warp_field"],
+      "expected_output_files": [
+        {"pattern": "*_warped.nii.gz", "description": "非线性配准后图像", "required": true},
+        {"pattern": "*_warp_coeff.nii.gz", "description": "变形系数", "required": true},
+        {"pattern": "*_warp_field.nii.gz", "description": "变形场", "required": false}
+      ],
+      "quality_checks": [
+        {"check": "file_readable", "description": "配准结果可读"},
+        {"check": "jacobian_range", "description": "Jacobian行列式在[0.01,100]范围 (建议手动检查)"}
+      ],
+      "reference_parameters": {
+        "config": "T1_2_MNI152_2mm",
+        "warp_resolution": [10, 10, 10],
+        "jacobian_range_note": "Jacobian<0表示折叠，应排除"
+      },
+      "acceptance_criteria": {
+        "description": "非线性配准输出合格判定标准",
+        "pass_conditions": [
+          {"field": "jacobian_min", "range": [0.01, 100], "severity": "error"}
+        ],
+        "fail_conditions": [
+          {"field": "jacobian_min", "threshold": 0, "operator": "<", "severity": "error", "message": "Jacobian含负值(折叠)，配准失败"}
+        ],
+        "warning_conditions": []
+      }
+    },
+    "fast": {
+      "description": "组织分割 (FAST)",
+      "references": ["Zhang et al. (2001) Segmentation of brain MR images, IEEE TMI 20:45-57"],
+      "required_input_fields": ["input_files"],
+      "optional_input_fields": ["n_classes", "bias_field", "type"],
+      "expected_output_fields": ["pve_files", "seg_file", "bias_field"],
+      "expected_output_files": [
+        {"pattern": "*_pve_0.nii.gz", "description": "CSF概率图", "required": true},
+        {"pattern": "*_pve_1.nii.gz", "description": "灰质概率图", "required": true},
+        {"pattern": "*_pve_2.nii.gz", "description": "白质概率图", "required": true},
+        {"pattern": "*_seg.nii.gz", "description": "硬分割结果", "required": true},
+        {"pattern": "*_mixeltype.nii.gz", "description": "混合体素类型", "required": false},
+        {"pattern": "*_bias.nii.gz", "description": "偏置场", "required": false}
+      ],
+      "quality_checks": [
+        {"check": "value_range", "field": "tissue_probability", "params": {"min": 0, "max": 1}, "description": "组织概率在[0,1]范围"},
+        {"check": "file_readable", "description": "分割结果可读"}
+      ],
+      "reference_parameters": {
+        "n_classes": 3,
+        "type": 1,
+        "type_note": "1=T1w, 2=T2w, 3=PD"
+      },
+      "acceptance_criteria": {
+        "description": "组织分割输出合格判定标准",
+        "pass_conditions": [
+          {"check": "required_files_exist", "files": ["*_pve_0.nii.gz", "*_pve_1.nii.gz", "*_pve_2.nii.gz"], "severity": "error"},
+          {"field": "tissue_probability_sum", "range": [0.95, 1.05], "severity": "error", "note": "概率和≈1"}
+        ],
+        "fail_conditions": [
+          {"check": "required_files_missing", "files": ["*_pve_*.nii.gz"], "severity": "error"}
+        ],
+        "warning_conditions": []
+      }
+    },
+    "tbss": {
+      "description": "TBSS白质骨架分析",
+      "references": ["Smith et al. (2006) Tract-based spatial statistics, NeuroImage 31:1487-1505"],
+      "required_input_fields": ["fa_images"],
+      "optional_input_fields": ["skeleton_threshold", "target"],
+      "expected_output_fields": ["mean_fa", "fa_skeleton", "skeleton_mask"],
+      "expected_output_files": [
+        {"pattern": "stats/mean_FA.nii.gz", "description": "平均FA图", "required": true},
+        {"pattern": "stats/mean_FA_skeleton.nii.gz", "description": "FA骨架", "required": true},
+        {"pattern": "stats/mean_FA_skeleton_mask.nii.gz", "description": "骨架掩模", "required": true},
+        {"pattern": "stats/all_FA_skeletonised.nii.gz", "description": "所有被试骨架化FA", "required": true}
+      ],
+      "quality_checks": [
+        {"check": "file_readable", "description": "TBSS输出可读"},
+        {"check": "value_range", "field": "skeleton_threshold", "params": {"min": 0.15, "max": 0.3}, "description": "骨架阈值在0.15-0.3范围"}
+      ],
+      "reference_parameters": {
+        "skeleton_threshold": 0.2,
+        "target": "FMRIB58_FA_1mm",
+        "note": "阈值0.2为Smith et al. (2006)推荐默认值"
+      },
+      "acceptance_criteria": {
+        "description": "TBSS输出合格判定标准",
+        "pass_conditions": [
+          {"field": "skeleton_threshold", "expected": 0.2, "severity": "error"},
+          {"check": "required_files_exist", "files": ["stats/mean_FA.nii.gz", "stats/mean_FA_skeleton.nii.gz"], "severity": "error"}
+        ],
+        "fail_conditions": [
+          {"check": "required_files_missing", "files": ["stats/mean_FA_skeleton.nii.gz"], "severity": "error"}
+        ],
+        "warning_conditions": []
+      }
+    },
+    "topup": {
+      "description": "磁敏感畸变校正",
+      "references": ["Andersson et al. (2003) How to correct susceptibility distortions, NeuroImage 20:870-888"],
+      "required_input_fields": ["b0_images", "acqp_file"],
+      "optional_input_fields": ["config"],
+      "expected_output_fields": ["fieldmap", "corrected_b0", "movement_params"],
+      "expected_output_files": [
+        {"pattern": "*_topup_fieldcoef.nii.gz", "description": "场图系数", "required": true},
+        {"pattern": "*_topup_movpar.txt", "description": "运动参数", "required": false}
+      ],
+      "quality_checks": [
+        {"check": "file_readable", "description": "场图可读"}
+      ],
+      "reference_parameters": {
+        "config": "b02b0.cnf",
+        "note": "需要至少两个相反相位编码方向的b=0图像"
+      },
+      "acceptance_criteria": {
+        "description": "磁敏感畸变校正输出合格判定标准",
+        "pass_conditions": [
+          {"check": "output_file_exists", "pattern": "*_topup_fieldcoef.nii.gz", "severity": "error"}
+        ],
+        "fail_conditions": [
+          {"check": "required_files_missing", "files": ["*_topup_fieldcoef.nii.gz"], "severity": "error", "message": "场图文件缺失"}
+        ],
+        "warning_conditions": []
+      }
+    },
+    "feat": {
+      "description": "FEAT fMRI分析",
+      "references": ["Woolrich et al. (2001) Temporal autocorrelation in univariate linear modeling, NeuroImage 14:1370-1386"],
+      "required_input_fields": ["input_4d", "design_fsf"],
+      "optional_input_fields": ["highres", "standard"],
+      "expected_output_fields": ["feat_dir"],
+      "expected_output_files": [
+        {"pattern": "*.feat/stats/zstat*.nii.gz", "description": "Z统计图", "required": true},
+        {"pattern": "*.feat/stats/cope*.nii.gz", "description": "对比参数估计", "required": true},
+        {"pattern": "*.feat/design.mat", "description": "设计矩阵", "required": true},
+        {"pattern": "*.feat/design.con", "description": "对比矩阵", "required": true},
+        {"pattern": "*.feat/mask.nii.gz", "description": "分析掩模", "required": false}
+      ],
+      "quality_checks": [
+        {"check": "file_readable", "description": "FEAT输出可读"}
+      ],
+      "reference_parameters": {
+        "high_pass_filter": 100,
+        "film_prewhitening": true,
+        "motion_correction": "MCFLIRT"
+      },
+      "acceptance_criteria": {
+        "description": "FEAT分析输出合格判定标准",
+        "pass_conditions": [
+          {"check": "required_files_exist", "files": ["*.feat/stats/", "*.feat/design.mat", "*.feat/design.con"], "severity": "error"}
+        ],
+        "fail_conditions": [
+          {"check": "feat_dir_incomplete", "required_subdirs": ["stats", "reg", "logs"], "severity": "error", "message": ".feat目录结构不完整"}
+        ],
+        "warning_conditions": []
+      }
+    },
+    "melodic": {
+      "description": "ICA分析 (MELODIC)",
+      "references": ["Beckmann & Smith (2004) Probabilistic ICA for fMRI, IEEE TMI 23:137-152"],
+      "required_input_fields": ["input_files"],
+      "optional_input_fields": ["n_components", "approach", "mask"],
+      "expected_output_fields": ["ic_maps", "mixing_matrix", "noise_classification"],
+      "expected_output_files": [
+        {"pattern": "melodic_IC.nii.gz", "description": "独立成分空间图", "required": true},
+        {"pattern": "melodic_mix", "description": "混合矩阵", "required": true},
+        {"pattern": "melodic_FTmix", "description": "频率谱", "required": false}
+      ],
+      "quality_checks": [
+        {"check": "file_readable", "description": "ICA输出可读"},
+        {"check": "value_positive", "field": "n_components", "description": "成分数为正"}
+      ],
+      "reference_parameters": {
+        "approach": "concat",
+        "approach_options": ["concat", "tensor"],
+        "dim_estimation": "automatic (Laplace approximation)"
+      },
+      "acceptance_criteria": {
+        "description": "ICA分析输出合格判定标准",
+        "pass_conditions": [
+          {"check": "required_files_exist", "files": ["melodic_IC.nii.gz", "melodic_mix"], "severity": "error"}
+        ],
+        "fail_conditions": [
+          {"check": "required_files_missing", "files": ["melodic_IC.nii.gz"], "severity": "error", "message": "IC maps缺失"}
+        ],
+        "warning_conditions": []
+      }
+    }
+  }
+}

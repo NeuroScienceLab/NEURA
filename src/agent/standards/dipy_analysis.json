@@ -1,0 +1,157 @@
+{
+  "tool_name": "dipy_analysis",
+  "description": "DiPy 扩散成像分析工具",
+  "version": "2.0",
+  "operations": {
+    "tensor_fit": {
+      "description": "DTI张量拟合",
+      "references": ["Basser et al. (1994) MR diffusion tensor spectroscopy and imaging, Biophysical Journal 66:259-267"],
+      "required_input_fields": ["dwi_file", "bval_file", "bvec_file", "mask_file"],
+      "optional_input_fields": ["fit_method"],
+      "expected_output_fields": ["fa_map", "md_map", "ad_map", "rd_map", "color_fa", "residual_error"],
+      "expected_output_files": [
+        {"pattern": "*FA*.nii.gz", "description": "FA图", "required": true},
+        {"pattern": "*MD*.nii.gz", "description": "MD图", "required": true},
+        {"pattern": "*AD*.nii.gz", "description": "AD图", "required": true},
+        {"pattern": "*RD*.nii.gz", "description": "RD图", "required": true},
+        {"pattern": "*colorFA*.nii.gz", "description": "彩色FA图", "required": false},
+        {"pattern": "*residual*.nii.gz", "description": "拟合残差", "required": false},
+        {"pattern": "*L1*.nii.gz", "description": "第一特征值", "required": false},
+        {"pattern": "*L2*.nii.gz", "description": "第二特征值", "required": false},
+        {"pattern": "*L3*.nii.gz", "description": "第三特征值", "required": false}
+      ],
+      "quality_checks": [
+        {"check": "value_range", "field": "FA", "params": {"min": 0, "max": 1}, "description": "FA值在[0,1]范围"},
+        {"check": "value_positive", "field": "MD", "description": "MD值为正"},
+        {"check": "value_range", "field": "md_mean", "params": {"min": 0.5e-3, "max": 2.5e-3}, "description": "平均MD在0.5-2.5×10⁻³ mm²/s范围"},
+        {"check": "ad_rd_relationship", "description": "AD应大于RD (建议手动检查)"},
+        {"check": "value_range", "field": "residual_mean", "params": {"max": 0.1}, "description": "拟合残差均值合理"}
+      ],
+      "reference_parameters": {
+        "fit_method": "WLS",
+        "fit_method_options": ["WLS", "OLS", "NLLS", "RESTORE"],
+        "min_directions": 6,
+        "note": "WLS (加权最小二乘) 推荐用于标准DTI"
+      },
+      "acceptance_criteria": {
+        "description": "DTI张量拟合合格判定标准",
+        "pass_conditions": [
+          {"field": "FA", "range": [0, 1], "severity": "error"},
+          {"field": "md_mean", "range": [0.0005, 0.0025], "severity": "error"}
+        ],
+        "fail_conditions": [
+          {"field": "FA", "range_outside": [0, 1], "severity": "error", "message": "FA超出[0,1]范围"}
+        ],
+        "warning_conditions": [
+          {"check": "ad_le_rd", "severity": "warning", "message": "AD≤RD，可能为灰质或病变区域"}
+        ]
+      }
+    },
+    "tractography": {
+      "description": "纤维追踪",
+      "references": ["Tournier et al. (2012) MRtrix: Diffusion tractography in crossing fiber regions, IJIST 22:53-66"],
+      "required_input_fields": ["fa_map", "evecs"],
+      "optional_input_fields": ["fa_threshold", "step_size", "max_angle", "seed_mask", "algorithm"],
+      "expected_output_fields": ["streamlines", "streamline_count"],
+      "expected_output_files": [
+        {"pattern": "*.trk", "description": "纤维束文件", "required": true}
+      ],
+      "quality_checks": [
+        {"check": "value_range", "field": "mean_tract_length_mm", "params": {"min": 20, "max": 200}, "description": "平均纤维长度在20-200mm范围"},
+        {"check": "value_range", "field": "streamline_count", "params": {"min": 1000}, "description": "纤维条数>1000"},
+        {"check": "value_range", "field": "fa_threshold", "params": {"min": 0.15, "max": 0.3}, "description": "FA阈值在0.15-0.3范围"},
+        {"check": "value_range", "field": "step_size_mm", "params": {"min": 0.5, "max": 1.0}, "description": "步长在0.5-1.0mm范围"},
+        {"check": "value_range", "field": "max_angle_deg", "params": {"min": 20, "max": 60}, "description": "最大转角在20-60°范围"}
+      ],
+      "reference_parameters": {
+        "fa_threshold": 0.2,
+        "step_size": 0.5,
+        "max_angle": 30,
+        "algorithm_options": ["deterministic", "probabilistic"],
+        "min_length": 20,
+        "max_length": 250
+      },
+      "acceptance_criteria": {
+        "description": "纤维追踪合格判定标准",
+        "pass_conditions": [
+          {"field": "fa_threshold", "range": [0.15, 0.3], "severity": "error"},
+          {"field": "step_size_mm", "range": [0.5, 1.0], "severity": "error"},
+          {"field": "max_angle_deg", "range": [20, 60], "severity": "error"},
+          {"field": "streamline_count", "range": [1000, 9999999], "severity": "error"}
+        ],
+        "fail_conditions": [
+          {"field": "streamline_count", "threshold": 100, "operator": "<", "severity": "error", "message": "纤维条数<100"}
+        ],
+        "warning_conditions": []
+      }
+    },
+    "csd_fit": {
+      "description": "CSD拟合 (Constrained Spherical Deconvolution)",
+      "references": ["Tournier et al. (2007) Robust determination of the fibre orientation distribution, NeuroImage 35:1459-1472"],
+      "required_input_fields": ["dwi_file", "bval_file", "bvec_file", "mask_file"],
+      "optional_input_fields": ["response_function", "sh_order"],
+      "expected_output_fields": ["fodf", "response_function"],
+      "expected_output_files": [
+        {"pattern": "*fODF*.nii.gz", "description": "纤维方向分布函数", "required": true},
+        {"pattern": "*response*.txt", "description": "响应函数", "required": true}
+      ],
+      "quality_checks": [
+        {"check": "file_readable", "description": "fODF文件可读"},
+        {"check": "value_range", "field": "sh_order", "params": {"min": 4, "max": 12}, "description": "球谐阶数在4-12范围"},
+        {"check": "value_positive", "field": "lmax", "description": "lmax为正偶数"}
+      ],
+      "reference_parameters": {
+        "sh_order": 8,
+        "response_estimation": "auto (recursive calibration)",
+        "min_bvalue": 1000,
+        "note": "CSD需要单壳或多壳高b值数据(b>=1000)"
+      },
+      "acceptance_criteria": {
+        "description": "CSD拟合合格判定标准",
+        "pass_conditions": [
+          {"check": "required_files_exist", "files": ["*fODF*.nii.gz"], "severity": "error"},
+          {"field": "sh_order", "range": [4, 12], "severity": "error"}
+        ],
+        "fail_conditions": [
+          {"check": "required_files_missing", "files": ["*fODF*.nii.gz"], "severity": "error", "message": "fODF文件缺失"}
+        ],
+        "warning_conditions": []
+      }
+    },
+    "denoise": {
+      "description": "DWI去噪",
+      "references": [
+        "Veraart et al. (2016) Denoising of diffusion MRI using random matrix theory, NeuroImage 142:394-406",
+        "Fadnavis et al. (2020) Patch2Self: Denoising Diffusion MRI with Self-Supervised Learning, NeurIPS"
+      ],
+      "required_input_fields": ["dwi_file"],
+      "optional_input_fields": ["method", "patch_radius"],
+      "expected_output_fields": ["denoised_dwi", "noise_map"],
+      "expected_output_files": [
+        {"pattern": "*denoised*.nii.gz", "description": "去噪后DWI", "required": true},
+        {"pattern": "*noise*.nii.gz", "description": "噪声图", "required": false}
+      ],
+      "quality_checks": [
+        {"check": "file_readable", "description": "去噪结果可读"},
+        {"check": "value_positive", "field": "snr_improvement", "description": "SNR有提升"},
+        {"check": "dimensions_preserved", "description": "去噪后维度与输入一致"}
+      ],
+      "reference_parameters": {
+        "method_options": ["mppca", "patch2self"],
+        "mppca_note": "MP-PCA基于随机矩阵理论，适用于多方向DWI",
+        "patch2self_note": "Patch2Self为自监督方法，不需要噪声模型假设"
+      },
+      "acceptance_criteria": {
+        "description": "DWI去噪合格判定标准",
+        "pass_conditions": [
+          {"field": "snr_improvement", "range": [0, 9999], "severity": "error", "note": "SNR应有提升"},
+          {"check": "dimensions_preserved", "severity": "error"}
+        ],
+        "fail_conditions": [
+          {"field": "snr_improvement", "threshold": 0, "operator": "<", "severity": "error", "message": "SNR下降，去噪可能有问题"}
+        ],
+        "warning_conditions": []
+      }
+    }
+  }
+}

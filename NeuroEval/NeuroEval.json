@@ -1,0 +1,3479 @@
+{
+  "test_cases": [
+    {
+      "id": "FR_帕金_001",
+      "disease": "帕金森病",
+      "query": "不同帕金森病临床亚型在基线时的脑结构形态学差异是什么？",
+      "reference_tools": [
+        {
+          "tool": "freesurfer_analysis",
+          "type": "recon-all",
+          "params": {}
+        },
+        {
+          "tool": "roi_extraction",
+          "type": "volume",
+          "params": {}
+        },
+        {
+          "tool": "python_stats",
+          "type": "anova",
+          "params": {}
+        }
+      ],
+      "source": "Longitudinal brain morphometry in Parkinson's disease clinical subtypes: Distinct signatures forecast behavioral change within subtypes.",
+      "source_url": "https://pubmed.ncbi.nlm.nih.gov/41371075/",
+      "level": 2,
+      "category": "freesurfer",
+      "brain_regions": [
+        "海马体",
+        "杏仁核",
+        "壳核",
+        "苍白球",
+        "前额叶皮层"
+      ]
+    },
+    {
+      "id": "FR_帕金_002",
+      "disease": "帕金森病",
+      "query": "帕金森病各亚型随时间推移的灰质体积变化模式是否不同，且与行为改变相关？",
+      "reference_tools": [
+        {
+          "tool": "spm_analysis",
+          "type": "vbm_segment",
+          "params": {}
+        },
+        {
+          "tool": "spm_analysis",
+          "type": "dartel_normalize",
+          "params": {}
+        },
+        {
+          "tool": "spm_analysis",
+          "type": "smooth",
+          "params": {}
+        },
+        {
+          "tool": "python_stats",
+          "type": "ttest",
+          "params": {}
+        },
+        {
+          "tool": "python_stats",
+          "type": "correlation",
+          "params": {}
+        }
+      ],
+      "source": "Longitudinal brain morphometry in Parkinson's disease clinical subtypes: Distinct signatures forecast behavioral change within subtypes.",
+      "source_url": "https://pubmed.ncbi.nlm.nih.gov/41371075/",
+      "level": 2,
+      "category": "spm_vbm",
+      "brain_regions": [
+        "全脑灰质",
+        "内侧颞叶",
+        "扣带回",
+        "丘脑"
+      ]
+    },
+    {
+      "id": "FR_帕金_003",
+      "disease": "帕金森病",
+      "query": "帕金森病患者的感觉运动区皮层厚度是否与神经生理信号的爆发动态特征相关？",
+      "reference_tools": [
+        {
+          "tool": "freesurfer_analysis",
+          "type": "recon-all",
+          "params": {}
+        },
+        {
+          "tool": "roi_extraction",
+          "type": "BA3b,BA1,BA6",
+          "params": {}
+        },
+        {
+          "tool": "python_stats",
+          "type": "correlation",
+          "params": {}
+        }
+      ],
+      "source": "Linking Cortical Morphology and Neurophysiological Dynamics in Parkinson's Disease.",
+      "source_url": "https://pubmed.ncbi.nlm.nih.gov/41356369/",
+      "level": 2,
+      "category": "freesurfer",
+      "brain_regions": [
+        "BA3b",
+        "BA1",
+        "BA6"
+      ]
+    },
+    {
+      "id": "FR_帕金_004",
+      "disease": "帕金森病",
+      "query": "在控制年龄、病程和运动症状严重度后，帕金森病患者皮层形态与神经电生理特征的潜在耦合模式是否仍然显著？",
+      "reference_tools": [
+        {
+          "tool": "freesurfer_analysis",
+          "type": "recon-all",
+          "params": {}
+        },
+        {
+          "tool": "roi_extraction",
+          "type": "sensorimotor_Brodmann_areas",
+          "params": {}
+        },
+        {
+          "tool": "python_stats",
+          "type": "partial_correlation",
+          "params": {}
+        },
+        {
+          "tool": "python_stats",
+          "type": "spls",
+          "params": {}
+        }
+      ],
+      "source": "Linking Cortical Morphology and Neurophysiological Dynamics in Parkinson's Disease.",
+      "source_url": "https://pubmed.ncbi.nlm.nih.gov/41356369/",
+      "level": 2,
+      "category": "freesurfer",
+      "brain_regions": [
+        "BA3b",
+        "BA1",
+        "BA2",
+        "BA4",
+        "BA6"
+      ]
+    },
+    {
+      "id": "FR_帕金_005",
+      "disease": "帕金森病",
+      "query": "比较帕金森病伴冲动控制障碍患者、不伴冲动控制障碍患者和健康对照组在右侧额极和左侧中颞回的脑沟深度差异",
+      "reference_tools": [
+        {
+          "tool": "freesurfer_analysis",
+          "type": "recon-all",
+          "params": {}
+        },
+        {
+          "tool": "roi_extraction",
+          "type": "sulcal_depth",
+          "params": {}
+        },
+        {
+          "tool": "python_stats",
+          "type": "anova",
+          "params": {}
+        }
+      ],
+      "source": "Alterations in cortical sulcal morphology in Parkinson's disease patients with impulse control disorders.",
+      "source_url": "https://pubmed.ncbi.nlm.nih.gov/41253198/",
+      "level": 2,
+      "category": "freesurfer",
+      "brain_regions": [
+        "right frontal pole",
+        "left middle temporal gyrus"
+      ]
+    },
+    {
+      "id": "FR_帕金_006",
+      "disease": "帕金森病",
+      "query": "分析帕金森病伴冲动控制障碍患者中右侧额极脑沟深度与症状严重程度的相关性",
+      "reference_tools": [
+        {
+          "tool": "freesurfer_analysis",
+          "type": "recon-all",
+          "params": {}
+        },
+        {
+          "tool": "roi_extraction",
+          "type": "sulcal_depth",
+          "params": {}
+        },
+        {
+          "tool": "python_stats",
+          "type": "correlation",
+          "params": {}
+        }
+      ],
+      "source": "Alterations in cortical sulcal morphology in Parkinson's disease patients with impulse control disorders.",
+      "source_url": "https://pubmed.ncbi.nlm.nih.gov/41253198/",
+      "level": 2,
+      "category": "freesurfer",
+      "brain_regions": [
+        "right frontal pole"
+      ]
+    },
+    {
+      "id": "DP_帕金_007",
+      "disease": "帕金森病",
+      "query": "帕金森病患者中维生素D水平是否与额上回的功能连接强度相关？",
+      "reference_tools": [
+        {
+          "tool": "dpabi_analysis",
+          "type": "fc",
+          "params": {}
+        },
+        {
+          "tool": "roi_extraction",
+          "type": "superior_frontal_gyrus",
+          "params": {}
+        },
+        {
+          "tool": "python_stats",
+          "type": "correlation",
+          "params": {}
+        }
+      ],
+      "source": "Vitamin D-linked vulnerability and functional connectivity alterations in the superior frontal gyrus contributing to cognitive impairment in Parkinson's disease.",
+      "source_url": "https://pubmed.ncbi.nlm.nih.gov/41346436/",
+      "level": 2,
+      "category": "dpabi",
+      "brain_regions": [
+        "superior frontal gyrus"
+      ]
+    },
+    {
+      "id": "DP_帕金_008",
+      "disease": "帕金森病",
+      "query": "帕金森病认知障碍患者与非认知障碍患者在额上回的灰质体积是否存在显著差异？",
+      "reference_tools": [
+        {
+          "tool": "freesurfer_analysis",
+          "type": "recon-all",
+          "params": {}
+        },
+        {
+          "tool": "roi_extraction",
+          "type": "volume",
+          "params": {}
+        },
+        {
+          "tool": "python_stats",
+          "type": "ttest",
+          "params": {}
+        }
+      ],
+      "source": "Vitamin D-linked vulnerability and functional connectivity alterations in the superior frontal gyrus contributing to cognitive impairment in Parkinson's disease.",
+      "source_url": "https://pubmed.ncbi.nlm.nih.gov/41346436/",
+      "level": 2,
+      "category": "freesurfer",
+      "brain_regions": [
+        "superior frontal gyrus"
+      ]
+    },
+    {
+      "id": "FS_帕金_009",
+      "disease": "帕金森病",
+      "query": "早期帕金森病合并轻度认知障碍患者的灰质体积是否显著减少？涉及哪些脑区？",
+      "reference_tools": [
+        {
+          "tool": "spm_analysis",
+          "type": "vbm_segment",
+          "params": {}
+        },
+        {
+          "tool": "spm_analysis",
+          "type": "dartel_normalize",
+          "params": {}
+        },
+        {
+          "tool": "spm_analysis",
+          "type": "smooth",
+          "params": {}
+        },
+        {
+          "tool": "roi_extraction",
+          "type": "gm_volume",
+          "params": {}
+        },
+        {
+          "tool": "python_stats",
+          "type": "ttest",
+          "params": {}
+        }
+      ],
+      "source": "Neuroanatomical changes in early Parkinson's disease with mild cognitive impairment: gray matter and white matter damage.",
+      "source_url": "https://pubmed.ncbi.nlm.nih.gov/41041668/",
+      "level": 2,
+      "category": "spm_vbm",
+      "brain_regions": [
+        "海马",
+        "杏仁核",
+        "前额叶皮层",
+        "扣带回"
+      ]
+    },
+    {
+      "id": "FS_帕金_010",
+      "disease": "帕金森病",
+      "query": "早期帕金森病合并轻度认知障碍患者是否存在白质微结构损伤？主要影响哪些白质纤维束？",
+      "reference_tools": [
+        {
+          "tool": "fsl_analysis",
+          "type": "eddy",
+          "params": {}
+        },
+        {
+          "tool": "fsl_analysis",
+          "type": "dtifit",
+          "params": {}
+        },
+        {
+          "tool": "fsl_analysis",
+          "type": "tbss",
+          "params": {}
+        },
+        {
+          "tool": "roi_extraction",
+          "type": "wm_skeleton",
+          "params": {}
+        },
+        {
+          "tool": "python_stats",
+          "type": "anova",
+          "params": {}
+        }
+      ],
+      "source": "Neuroanatomical changes in early Parkinson's disease with mild cognitive impairment: gray matter and white matter damage.",
+      "source_url": "https://pubmed.ncbi.nlm.nih.gov/41041668/",
+      "level": 2,
+      "category": "fsl_dti",
+      "brain_regions": [
+        "胼胝体",
+        "额枕下束",
+        "上纵束",
+        "皮质脊髓束"
+      ]
+    },
+    {
+      "id": "SP_帕金_011",
+      "disease": "帕金森病",
+      "query": "帕金森病患者的脑结构变化是否与MiniBESTest评分相关？",
+      "reference_tools": [
+        {
+          "tool": "spm_analysis",
+          "type": "vbm_segment",
+          "params": {}
+        },
+        {
+          "tool": "spm_analysis",
+          "type": "dartel_normalize",
+          "params": {}
+        },
+        {
+          "tool": "spm_analysis",
+          "type": "smooth",
+          "params": {}
+        },
+        {
+          "tool": "freesurfer_analysis",
+          "type": "recon-all",
+          "params": {}
+        },
+        {
+          "tool": "roi_extraction",
+          "type": "volume_based",
+          "params": {}
+        },
+        {
+          "tool": "python_stats",
+          "type": "correlation",
+          "params": {}
+        }
+      ],
+      "source": "System-wise balance evaluation and its association with structural brain changes in Parkinson's disease.",
+      "source_url": "https://pubmed.ncbi.nlm.nih.gov/40645076/",
+      "level": 2,
+      "category": "multi",
+      "brain_regions": [
+        "海马",
+        "前额叶皮层",
+        "基底节",
+        "小脑"
+      ]
+    },
+    {
+      "id": "SP_帕金_012",
+      "disease": "帕金森病",
+      "query": "帕金森病患者在静息态功能指标上是否存在显著异常，且这些异常是否与平衡功能评分相关？",
+      "reference_tools": [
+        {
+          "tool": "dpabi_analysis",
+          "type": "alff",
+          "params": {}
+        },
+        {
+          "tool": "dpabi_analysis",
+          "type": "reho",
+          "params": {}
+        },
+        {
+          "tool": "dpabi_analysis",
+          "type": "fc",
+          "params": {}
+        },
+        {
+          "tool": "python_stats",
+          "type": "ttest",
+          "params": {}
+        },
+        {
+          "tool": "python_stats",
+          "type": "correlation",
+          "params": {}
+        }
+      ],
+      "source": "System-wise balance evaluation and its association with structural brain changes in Parkinson's disease.",
+      "source_url": "https://pubmed.ncbi.nlm.nih.gov/40645076/",
+      "level": 2,
+      "category": "dpabi",
+      "brain_regions": [
+        "默认模式网络",
+        "前额叶",
+        "顶叶皮层",
+        "辅助运动区"
+      ]
+    },
+    {
+      "id": "FR_帕金_013",
+      "disease": "帕金森病",
+      "query": "LILRB4基因型是否与帕金森病患者的海马亚区体积变化相关？",
+      "reference_tools": [
+        {
+          "tool": "freesurfer_analysis",
+          "type": "hippocampal_subfields",
+          "params": {}
+        },
+        {
+          "tool": "roi_extraction",
+          "type": "hippocampal_subregions",
+          "params": {}
+        },
+        {
+          "tool": "python_stats",
+          "type": "anova",
+          "params": {}
+        }
+      ],
+      "source": "Uncovering the Associations of LILRB4 Genotypes With Parkinson's Disease: From Clinical Traits to Potential Pathologies.",
+      "source_url": "https://pubmed.ncbi.nlm.nih.gov/40702763/",
+      "level": 2,
+      "category": "freesurfer",
+      "brain_regions": [
+        "hippocampus",
+        "subiculum",
+        "CA1",
+        "CA2",
+        "CA3",
+        "dentate_gyrus"
+      ]
+    },
+    {
+      "id": "FR_帕金_014",
+      "disease": "帕金森病",
+      "query": "帕金森病患者中，LILRB4基因型是否影响全脑灰质体积？",
+      "reference_tools": [
+        {
+          "tool": "spm_analysis",
+          "type": "vbm_segment",
+          "params": {}
+        },
+        {
+          "tool": "spm_analysis",
+          "type": "dartel_normalize",
+          "params": {}
+        },
+        {
+          "tool": "spm_analysis",
+          "type": "smooth",
+          "params": {}
+        },
+        {
+          "tool": "python_stats",
+          "type": "ttest",
+          "params": {}
+        }
+      ],
+      "source": "Uncovering the Associations of LILRB4 Genotypes With Parkinson's Disease: From Clinical Traits to Potential Pathologies.",
+      "source_url": "https://pubmed.ncbi.nlm.nih.gov/40702763/",
+      "level": 2,
+      "category": "spm_vbm",
+      "brain_regions": [
+        "whole_brain",
+        "gray_matter"
+      ]
+    },
+    {
+      "id": "FS_帕金_015",
+      "disease": "帕金森病",
+      "query": "帕金森病患者黑质亚区的微观结构变化是否与抑郁症状相关？",
+      "reference_tools": [
+        {
+          "tool": "fsl_analysis",
+          "type": "eddy",
+          "params": {}
+        },
+        {
+          "tool": "fsl_analysis",
+          "type": "dtifit",
+          "params": {}
+        },
+        {
+          "tool": "roi_extraction",
+          "type": "substantia_nigra_subregions",
+          "params": {}
+        },
+        {
+          "tool": "python_stats",
+          "type": "correlation",
+          "params": {}
+        }
+      ],
+      "source": "Microstructural patterns in substantia nigra subregions are associated with depression and olfactory impairments in Parkinson's disease.",
+      "source_url": "https://pubmed.ncbi.nlm.nih.gov/40080943/",
+      "level": 2,
+      "category": "fsl_dti",
+      "brain_regions": [
+        "substantia nigra",
+        "ventral tier of substantia nigra",
+        "dorsal tier of substantia nigra"
+      ]
+    },
+    {
+      "id": "FS_帕金_016",
+      "disease": "帕金森病",
+      "query": "帕金森病患者黑质亚区的扩散指标是否在患者与健康对照之间存在显著差异？",
+      "reference_tools": [
+        {
+          "tool": "fsl_analysis",
+          "type": "eddy",
+          "params": {}
+        },
+        {
+          "tool": "fsl_analysis",
+          "type": "dtifit",
+          "params": {}
+        },
+        {
+          "tool": "roi_extraction",
+          "type": "substantia_nigra_subregions",
+          "params": {}
+        },
+        {
+          "tool": "fsl_analysis",
+          "type": "tbss",
+          "params": {}
+        },
+        {
+          "tool": "python_stats",
+          "type": "ttest",
+          "params": {}
+        }
+      ],
+      "source": "Microstructural patterns in substantia nigra subregions are associated with depression and olfactory impairments in Parkinson's disease.",
+      "source_url": "https://pubmed.ncbi.nlm.nih.gov/40080943/",
+      "level": 2,
+      "category": "fsl_dti",
+      "brain_regions": [
+        "substantia nigra",
+        "ventral tier of substantia nigra",
+        "dorsal tier of substantia nigra"
+      ]
+    },
+    {
+      "id": "FS_帕金_017",
+      "disease": "帕金森病",
+      "query": "基于扩散张量成像的血管周围间隙分析（DTI-ALPS）是否能区分帕金森病患者与健康对照组？",
+      "reference_tools": [
+        {
+          "tool": "fsl_analysis",
+          "type": "eddy",
+          "params": {}
+        },
+        {
+          "tool": "fsl_analysis",
+          "type": "dtifit",
+          "params": {}
+        },
+        {
+          "tool": "fsl_analysis",
+          "type": "tbss",
+          "params": {}
+        },
+        {
+          "tool": "roi_extraction",
+          "type": null,
+          "params": {}
+        },
+        {
+          "tool": "python_stats",
+          "type": "ttest",
+          "params": {}
+        }
+      ],
+      "source": "Diffusion tensor image analysis along the perivascular space and quantitative susceptibility mapping in the diagnosis and severity assessment of Parkinson's disease.",
+      "source_url": "https://pubmed.ncbi.nlm.nih.gov/39995711/",
+      "level": 2,
+      "category": "fsl_dti",
+      "brain_regions": [
+        "perivascular_space",
+        "white_matter_tracts_near_lateral_ventricle"
+      ]
+    },
+    {
+      "id": "FS_帕金_018",
+      "disease": "帕金森病",
+      "query": "黑质区域的磁敏感值（QSM）在帕金森病患者中是否显著升高，并与疾病严重程度相关？",
+      "reference_tools": [
+        {
+          "tool": "spm_analysis",
+          "type": "dartel_normalize",
+          "params": {}
+        },
+        {
+          "tool": "roi_extraction",
+          "type": null,
+          "params": {}
+        },
+        {
+          "tool": "python_stats",
+          "type": "ttest",
+          "params": {}
+        },
+        {
+          "tool": "python_stats",
+          "type": "correlation",
+          "params": {}
+        }
+      ],
+      "source": "Diffusion tensor image analysis along the perivascular space and quantitative susceptibility mapping in the diagnosis and severity assessment of Parkinson's disease.",
+      "source_url": "https://pubmed.ncbi.nlm.nih.gov/39995711/",
+      "level": 2,
+      "category": "spm_vbm",
+      "brain_regions": [
+        "substantia_nigra"
+      ]
+    },
+    {
+      "id": "FR_阿尔_019",
+      "disease": "阿尔茨海默病",
+      "query": "阿尔茨海默病患者脑沟深度是否在tau蛋白沉积区域表现出更显著的萎缩，且这种萎缩是否与认知功能下降相关？",
+      "reference_tools": [
+        {
+          "tool": "freesurfer_analysis",
+          "type": "recon-all",
+          "params": {}
+        },
+        {
+          "tool": "roi_extraction",
+          "type": "sulcal_depth",
+          "params": {}
+        },
+        {
+          "tool": "python_stats",
+          "type": "correlation",
+          "params": {}
+        }
+      ],
+      "source": "Alzheimer's Imaging Consortium.",
+      "source_url": "https://pubmed.ncbi.nlm.nih.gov/41434213/",
+      "level": 2,
+      "category": "freesurfer",
+      "brain_regions": [
+        "额叶脑沟",
+        "颞叶脑沟",
+        "顶叶脑沟"
+      ]
+    },
+    {
+      "id": "FR_阿尔_020",
+      "disease": "阿尔茨海默病",
+      "query": "阿尔茨海默病患者海马亚区体积是否显著减小，且与Aβ或tau病理负荷相关？",
+      "reference_tools": [
+        {
+          "tool": "freesurfer_analysis",
+          "type": "hippocampal_subfields",
+          "params": {}
+        },
+        {
+          "tool": "roi_extraction",
+          "type": "hippocampus_subregions",
+          "params": {}
+        },
+        {
+          "tool": "python_stats",
+          "type": "correlation",
+          "params": {}
+        }
+      ],
+      "source": "Alzheimer's Imaging Consortium.",
+      "source_url": "https://pubmed.ncbi.nlm.nih.gov/41434213/",
+      "level": 2,
+      "category": "freesurfer",
+      "brain_regions": [
+        "海马CA1",
+        "海马CA2-3",
+        "海马DG"
+      ]
+    },
+    {
+      "id": "SP_阿尔_021",
+      "disease": "阿尔茨海默病",
+      "query": "睡眠碎片化是否通过影响海马体积进而影响老年人的记忆功能？",
+      "reference_tools": [
+        {
+          "tool": "freesurfer_analysis",
+          "type": "hippocampal_subfields",
+          "params": {}
+        },
+        {
+          "tool": "roi_extraction",
+          "type": "hippocampus",
+          "params": {}
+        },
+        {
+          "tool": "python_stats",
+          "type": "mediation_analysis",
+          "params": {}
+        }
+      ],
+      "source": "Alzheimer's Imaging Consortium.",
+      "source_url": "https://pubmed.ncbi.nlm.nih.gov/41434087/",
+      "level": 2,
+      "category": "freesurfer",
+      "brain_regions": [
+        "hippocampus"
+      ]
+    },
+    {
+      "id": "SP_阿尔_022",
+      "disease": "阿尔茨海默病",
+      "query": "老年人的皮层灰质体积是否与睡眠不规律性相关？",
+      "reference_tools": [
+        {
+          "tool": "freesurfer_analysis",
+          "type": "recon-all",
+          "params": {}
+        },
+        {
+          "tool": "roi_extraction",
+          "type": "cortical_gray_matter",
+          "params": {}
+        },
+        {
+          "tool": "python_stats",
+          "type": "correlation",
+          "params": {}
+        }
+      ],
+      "source": "Alzheimer's Imaging Consortium.",
+      "source_url": "https://pubmed.ncbi.nlm.nih.gov/41434087/",
+      "level": 2,
+      "category": "freesurfer",
+      "brain_regions": [
+        "cortical_gray_matter"
+      ]
+    },
+    {
+      "id": "FR_阿尔_023",
+      "disease": "阿尔茨海默病",
+      "query": "比较阿尔茨海默病伴癫痫患者与非阿尔茨海默病伴癫痫患者的内侧颞叶亚区体积差异",
+      "reference_tools": [
+        {
+          "tool": "freesurfer_analysis",
+          "type": "hippocampal_subfields",
+          "params": {}
+        },
+        {
+          "tool": "roi_extraction",
+          "type": "mesial_temporal",
+          "params": {}
+        },
+        {
+          "tool": "python_stats",
+          "type": "ttest",
+          "params": {}
+        }
+      ],
+      "source": "Alzheimer's Imaging Consortium.",
+      "source_url": "https://pubmed.ncbi.nlm.nih.gov/41433429/",
+      "level": 2,
+      "category": "freesurfer",
+      "brain_regions": [
+        "海马",
+        "内嗅皮层",
+        "杏仁核"
+      ]
+    },
+    {
+      "id": "FR_阿尔_024",
+      "disease": "阿尔茨海默病",
+      "query": "提取阿尔茨海默病和非阿尔茨海默病痴呆患者的海马体积并进行组间比较",
+      "reference_tools": [
+        {
+          "tool": "freesurfer_analysis",
+          "type": "recon-all",
+          "params": {}
+        },
+        {
+          "tool": "roi_extraction",
+          "type": "hippocampus",
+          "params": {}
+        },
+        {
+          "tool": "python_stats",
+          "type": "anova",
+          "params": {}
+        }
+      ],
+      "source": "Alzheimer's Imaging Consortium.",
+      "source_url": "https://pubmed.ncbi.nlm.nih.gov/41433429/",
+      "level": 2,
+      "category": "freesurfer",
+      "brain_regions": [
+        "海马"
+      ]
+    },
+    {
+      "id": "FS_阿尔_025",
+      "disease": "阿尔茨海默病",
+      "query": "在认知正常和轻度认知障碍个体中，AlzoSure®预测分数是否与白质微结构完整性（如FA值）存在显著关联？",
+      "reference_tools": [
+        {
+          "tool": "fsl_analysis",
+          "type": "eddy",
+          "params": {}
+        },
+        {
+          "tool": "fsl_analysis",
+          "type": "dtifit",
+          "params": {}
+        },
+        {
+          "tool": "fsl_analysis",
+          "type": "tbss",
+          "params": {}
+        },
+        {
+          "tool": "python_stats",
+          "type": "ttest",
+          "params": {}
+        },
+        {
+          "tool": "python_stats",
+          "type": "correlation",
+          "params": {}
+        }
+      ],
+      "source": "Association Between U-p53AZ Blood Biomarker and White Matter Microstructure in Early Alzheimer's Disease: A Cross-Sectional Study Using AlzoSure® Predict.",
+      "source_url": "https://pubmed.ncbi.nlm.nih.gov/41438909/",
+      "level": 2,
+      "category": "fsl_dti",
+      "brain_regions": [
+        "corpus callosum",
+        "cingulum",
+        "internal capsule",
+        "superior longitudinal fasciculus"
+      ]
+    },
+    {
+      "id": "FS_阿尔_026",
+      "disease": "阿尔茨海默病",
+      "query": "U-p53AZ血液生物标志物水平与CSF中的Aβ₁₋₄₂、总tau和p-tau181是否在预测白质微结构损伤方面具有一致性？",
+      "reference_tools": [
+        {
+          "tool": "fsl_analysis",
+          "type": "dtifit",
+          "params": {}
+        },
+        {
+          "tool": "roi_extraction",
+          "type": null,
+          "params": {}
+        },
+        {
+          "tool": "python_stats",
+          "type": "correlation",
+          "params": {}
+        },
+        {
+          "tool": "python_stats",
+          "type": "anova",
+          "params": {}
+        }
+      ],
+      "source": "Association Between U-p53AZ Blood Biomarker and White Matter Microstructure in Early Alzheimer's Disease: A Cross-Sectional Study Using AlzoSure® Predict.",
+      "source_url": "https://pubmed.ncbi.nlm.nih.gov/41438909/",
+      "level": 2,
+      "category": "fsl_dti",
+      "brain_regions": [
+        "white matter skeleton",
+        "temporal lobe white matter",
+        "frontal lobe white matter"
+      ]
+    },
+    {
+      "id": "FS_阿尔_027",
+      "disease": "阿尔茨海默病",
+      "query": "阿尔茨海默病患者脑脊液中NPTX2水平是否与白质微结构完整性相关，特别是在已知受AD影响的白质通路中？",
+      "reference_tools": [
+        {
+          "tool": "fsl_analysis",
+          "type": "eddy",
+          "params": {}
+        },
+        {
+          "tool": "fsl_analysis",
+          "type": "dtifit",
+          "params": {}
+        },
+        {
+          "tool": "fsl_analysis",
+          "type": "tbss",
+          "params": {}
+        },
+        {
+          "tool": "roi_extraction",
+          "type": "white_matter_skeleton",
+          "params": {}
+        },
+        {
+          "tool": "python_stats",
+          "type": "correlation",
+          "params": {}
+        }
+      ],
+      "source": "Alzheimer's Imaging Consortium.",
+      "source_url": "https://pubmed.ncbi.nlm.nih.gov/41434166/",
+      "level": 2,
+      "category": "fsl_dti",
+      "brain_regions": [
+        "fornix",
+        "corpus_callosum",
+        "superior_longitudinal_fasciculus",
+        "cingulum_bundles"
+      ]
+    },
+    {
+      "id": "FS_阿尔_028",
+      "disease": "阿尔茨海默病",
+      "query": "在控制AD生物标志物水平后，VGF和GluA4蛋白水平是否仍与海马亚区体积存在显著关联？",
+      "reference_tools": [
+        {
+          "tool": "freesurfer_analysis",
+          "type": "recon-all",
+          "params": {}
+        },
+        {
+          "tool": "freesurfer_analysis",
+          "type": "hippocampal_subfields",
+          "params": {}
+        },
+        {
+          "tool": "roi_extraction",
+          "type": "hippocampal_subregions",
+          "params": {}
+        },
+        {
+          "tool": "python_stats",
+          "type": "anova",
+          "params": {}
+        }
+      ],
+      "source": "Alzheimer's Imaging Consortium.",
+      "source_url": "https://pubmed.ncbi.nlm.nih.gov/41434166/",
+      "level": 2,
+      "category": "freesurfer",
+      "brain_regions": [
+        "hippocampus",
+        "CA1",
+        "subiculum",
+        "dentate_gyrus"
+      ]
+    },
+    {
+      "id": "FS_阿尔_029",
+      "disease": "阿尔茨海默病",
+      "query": "阿尔茨海默病患者是否存在白质微结构完整性降低，表现为分数各向异性（FA）值下降和平均扩散率（MD）升高？",
+      "reference_tools": [
+        {
+          "tool": "fsl_analysis",
+          "type": "eddy",
+          "params": {}
+        },
+        {
+          "tool": "fsl_analysis",
+          "type": "dtifit",
+          "params": {}
+        },
+        {
+          "tool": "fsl_analysis",
+          "type": "tbss",
+          "params": {}
+        },
+        {
+          "tool": "python_stats",
+          "type": "ttest",
+          "params": {}
+        }
+      ],
+      "source": "Alzheimer's Imaging Consortium.",
+      "source_url": "https://pubmed.ncbi.nlm.nih.gov/41433807/",
+      "level": 2,
+      "category": "fsl_dti",
+      "brain_regions": [
+        "corpus_callosum",
+        "corticospinal_tract",
+        "superior_longitudinal_fasciculus",
+        "inferior_fronto_occipital_fasciculus"
+      ]
+    },
+    {
+      "id": "FS_阿尔_030",
+      "disease": "阿尔茨海默病",
+      "query": "从DTI数据中提取的FA和MD值在阿尔茨海默病患者与健康对照之间是否存在显著差异？",
+      "reference_tools": [
+        {
+          "tool": "fsl_analysis",
+          "type": "dtifit",
+          "params": {}
+        },
+        {
+          "tool": "roi_extraction",
+          "type": null,
+          "params": {}
+        },
+        {
+          "tool": "python_stats",
+          "type": "anova",
+          "params": {}
+        }
+      ],
+      "source": "Alzheimer's Imaging Consortium.",
+      "source_url": "https://pubmed.ncbi.nlm.nih.gov/41433807/",
+      "level": 2,
+      "category": "fsl_dti",
+      "brain_regions": [
+        "hippocampus",
+        "entorhinal_cortex",
+        "precuneus",
+        "temporal_lobe"
+      ]
+    },
+    {
+      "id": "SP_阿尔_031",
+      "disease": "阿尔茨海默病",
+      "query": "比较阿尔茨海默病与晚发性抑郁患者的海马体积差异",
+      "reference_tools": [
+        {
+          "tool": "freesurfer_analysis",
+          "type": "recon-all",
+          "params": {}
+        },
+        {
+          "tool": "roi_extraction",
+          "type": "hippocampal_subfields",
+          "params": {}
+        },
+        {
+          "tool": "python_stats",
+          "type": "ttest",
+          "params": {}
+        }
+      ],
+      "source": "Gray matter structural and molecular signatures in Alzheimer's disease and late-life depression.",
+      "source_url": "https://pubmed.ncbi.nlm.nih.gov/41419068/",
+      "level": 2,
+      "category": "freesurfer",
+      "brain_regions": [
+        "海马",
+        "左侧海马",
+        "右侧海马"
+      ]
+    },
+    {
+      "id": "SP_阿尔_032",
+      "disease": "阿尔茨海默病",
+      "query": "分析阿尔茨海默病患者全脑灰质体积的改变模式",
+      "reference_tools": [
+        {
+          "tool": "spm_analysis",
+          "type": "vbm_segment",
+          "params": {}
+        },
+        {
+          "tool": "spm_analysis",
+          "type": "dartel_normalize",
+          "params": {}
+        },
+        {
+          "tool": "spm_analysis",
+          "type": "smooth",
+          "params": {}
+        },
+        {
+          "tool": "python_stats",
+          "type": "anova",
+          "params": {}
+        }
+      ],
+      "source": "Gray matter structural and molecular signatures in Alzheimer's disease and late-life depression.",
+      "source_url": "https://pubmed.ncbi.nlm.nih.gov/41419068/",
+      "level": 2,
+      "category": "spm_vbm",
+      "brain_regions": [
+        "全脑灰质",
+        "额叶",
+        "颞叶",
+        "顶叶",
+        "扣带回"
+      ]
+    },
+    {
+      "id": "SP_阿尔_033",
+      "disease": "阿尔茨海默病",
+      "query": "不同共病神经病理（NFT、NP、LATE-NC、AGD、SVD）对路易体病患者灰质体积的影响：哪些脑区的灰质萎缩与特定共病病理呈显著负相关？",
+      "reference_tools": [
+        {
+          "tool": "spm_analysis",
+          "type": "vbm_segment",
+          "params": {}
+        },
+        {
+          "tool": "spm_analysis",
+          "type": "dartel_normalize",
+          "params": {}
+        },
+        {
+          "tool": "spm_analysis",
+          "type": "smooth",
+          "params": {}
+        },
+        {
+          "tool": "python_stats",
+          "type": "ttest",
+          "params": {}
+        },
+        {
+          "tool": "roi_extraction",
+          "type": null,
+          "params": {}
+        }
+      ],
+      "source": "Distinct brain atrophy patterns in Lewy body disease: The impact and interaction of comorbid neuropathologies revealed by voxel-based morphometry.",
+      "source_url": "https://pubmed.ncbi.nlm.nih.gov/41191003/",
+      "level": 2,
+      "category": "spm_vbm",
+      "brain_regions": [
+        "右侧颞叶",
+        "双侧额叶",
+        "左侧后扣带回",
+        "左侧颞叶",
+        "边缘系统",
+        "海马",
+        "左侧颞极",
+        "双侧小脑半球",
+        "顶叶部分区域"
+      ]
+    },
+    {
+      "id": "SP_阿尔_034",
+      "disease": "阿尔茨海默病",
+      "query": "共病神经病理之间的交互作用（如NFT与LATE-NC、NFT与NP、SVD与NFT或LATE-NC）如何影响路易体病患者的脑萎缩空间分布模式？",
+      "reference_tools": [
+        {
+          "tool": "spm_analysis",
+          "type": "vbm_segment",
+          "params": {}
+        },
+        {
+          "tool": "spm_analysis",
+          "type": "dartel_normalize",
+          "params": {}
+        },
+        {
+          "tool": "spm_analysis",
+          "type": "smooth",
+          "params": {}
+        },
+        {
+          "tool": "python_stats",
+          "type": "anova",
+          "params": {}
+        }
+      ],
+      "source": "Distinct brain atrophy patterns in Lewy body disease: The impact and interaction of comorbid neuropathologies revealed by voxel-based morphometry.",
+      "source_url": "https://pubmed.ncbi.nlm.nih.gov/41191003/",
+      "level": 2,
+      "category": "spm_vbm",
+      "brain_regions": [
+        "边缘系统",
+        "颞叶",
+        "后部优势分布脑区"
+      ]
+    },
+    {
+      "id": "FR_阿尔_035",
+      "disease": "阿尔茨海默病",
+      "query": "比较阿尔茨海默病患者与认知正常的对照组之间海马体积的差异",
+      "reference_tools": [
+        {
+          "tool": "freesurfer_analysis",
+          "type": "recon-all",
+          "params": {}
+        },
+        {
+          "tool": "roi_extraction",
+          "type": "hippocampal_subfields",
+          "params": {}
+        },
+        {
+          "tool": "python_stats",
+          "type": "ttest",
+          "params": {}
+        }
+      ],
+      "source": "Altered brain morphometry and its association with cognitive decline and",
+      "source_url": "https://pubmed.ncbi.nlm.nih.gov/41071913/",
+      "level": 2,
+      "category": "freesurfer",
+      "brain_regions": [
+        "海马",
+        "左侧海马",
+        "右侧海马"
+      ]
+    },
+    {
+      "id": "FR_阿尔_036",
+      "disease": "阿尔茨海默病",
+      "query": "分析阿尔茨海默病不同阶段（CU、At-Risk CU、MCI、AD）的灰质体积变化模式",
+      "reference_tools": [
+        {
+          "tool": "spm_analysis",
+          "type": "vbm_segment",
+          "params": {}
+        },
+        {
+          "tool": "spm_analysis",
+          "type": "dartel_normalize",
+          "params": {}
+        },
+        {
+          "tool": "spm_analysis",
+          "type": "smooth",
+          "params": {}
+        },
+        {
+          "tool": "python_stats",
+          "type": "anova",
+          "params": {}
+        }
+      ],
+      "source": "Altered brain morphometry and its association with cognitive decline and",
+      "source_url": "https://pubmed.ncbi.nlm.nih.gov/41071913/",
+      "level": 2,
+      "category": "spm_vbm",
+      "brain_regions": [
+        "全脑灰质",
+        "内侧颞叶",
+        "前额叶皮层"
+      ]
+    },
+    {
+      "id": "SP_精神_037",
+      "disease": "精神分裂症",
+      "query": "精神分裂症患者前额叶灰质体积与纹状体多巴胺合成能力之间的关系是什么？",
+      "reference_tools": [
+        {
+          "tool": "spm_analysis",
+          "type": "vbm_segment",
+          "params": {}
+        },
+        {
+          "tool": "spm_analysis",
+          "type": "dartel_normalize",
+          "params": {}
+        },
+        {
+          "tool": "roi_extraction",
+          "type": "prefrontal_grey_matter",
+          "params": {}
+        },
+        {
+          "tool": "python_stats",
+          "type": "correlation",
+          "params": {}
+        }
+      ],
+      "source": "The relationship between grey matter volume and striatal dopamine function in psychosis: a multimodal",
+      "source_url": "https://pubmed.ncbi.nlm.nih.gov/31690805/",
+      "level": 2,
+      "category": "spm_vbm",
+      "brain_regions": [
+        "prefrontal cortex",
+        "striatum"
+      ]
+    },
+    {
+      "id": "SP_精神_038",
+      "disease": "精神分裂症",
+      "query": "治疗反应性与非反应性精神病患者在前额叶灰质体积上是否存在显著差异？",
+      "reference_tools": [
+        {
+          "tool": "spm_analysis",
+          "type": "vbm_segment",
+          "params": {}
+        },
+        {
+          "tool": "spm_analysis",
+          "type": "dartel_normalize",
+          "params": {}
+        },
+        {
+          "tool": "roi_extraction",
+          "type": "prefrontal_grey_matter",
+          "params": {}
+        },
+        {
+          "tool": "python_stats",
+          "type": "ttest",
+          "params": {}
+        }
+      ],
+      "source": "The relationship between grey matter volume and striatal dopamine function in psychosis: a multimodal",
+      "source_url": "https://pubmed.ncbi.nlm.nih.gov/31690805/",
+      "level": 2,
+      "category": "spm_vbm",
+      "brain_regions": [
+        "prefrontal cortex"
+      ]
+    },
+    {
+      "id": "SP_精神_039",
+      "disease": "精神分裂症",
+      "query": "比较青少年起病与成年起病的精神分裂症患者在灰质体积上的差异，重点关注顶叶后中央回、旁海马回和小脑后锥体等脑区",
+      "reference_tools": [
+        {
+          "tool": "spm_analysis",
+          "type": "vbm_segment",
+          "params": {}
+        },
+        {
+          "tool": "spm_analysis",
+          "type": "dartel_normalize",
+          "params": {}
+        },
+        {
+          "tool": "spm_analysis",
+          "type": "smooth",
+          "params": {}
+        },
+        {
+          "tool": "python_stats",
+          "type": "anova",
+          "params": {}
+        },
+        {
+          "tool": "roi_extraction",
+          "type": null,
+          "params": {}
+        }
+      ],
+      "source": "Differential Cortical Gray Matter Deficits in Adolescent- and Adult-Onset First-Episode Treatment-Naïve Patients with Schizophrenia.",
+      "source_url": "https://pubmed.ncbi.nlm.nih.gov/28860557/",
+      "level": 2,
+      "category": "spm_vbm",
+      "brain_regions": [
+        "左侧顶叶后中央回",
+        "旁海马回",
+        "右侧小脑后锥体"
+      ]
+    },
+    {
+      "id": "SP_精神_040",
+      "disease": "精神分裂症",
+      "query": "分析精神分裂症患者与健康对照组之间的全脑灰质体积差异，识别显著降低的脑区",
+      "reference_tools": [
+        {
+          "tool": "spm_analysis",
+          "type": "vbm_segment",
+          "params": {}
+        },
+        {
+          "tool": "spm_analysis",
+          "type": "dartel_normalize",
+          "params": {}
+        },
+        {
+          "tool": "spm_analysis",
+          "type": "smooth",
+          "params": {}
+        },
+        {
+          "tool": "python_stats",
+          "type": "ttest",
+          "params": {}
+        }
+      ],
+      "source": "Differential Cortical Gray Matter Deficits in Adolescent- and Adult-Onset First-Episode Treatment-Naïve Patients with Schizophrenia.",
+      "source_url": "https://pubmed.ncbi.nlm.nih.gov/28860557/",
+      "level": 2,
+      "category": "spm_vbm",
+      "brain_regions": [
+        "左侧额顶区",
+        "右侧中颞回",
+        "枕叶",
+        "右侧小脑后锥体"
+      ]
+    },
+    {
+      "id": "SP_精神_041",
+      "disease": "精神分裂症",
+      "query": "精神分裂症患者与健康对照组之间的全脑灰质体积差异分析",
+      "reference_tools": [
+        {
+          "tool": "spm_analysis",
+          "type": "vbm_segment",
+          "params": {}
+        },
+        {
+          "tool": "spm_analysis",
+          "type": "dartel_normalize",
+          "params": {}
+        },
+        {
+          "tool": "spm_analysis",
+          "type": "smooth",
+          "params": {}
+        },
+        {
+          "tool": "python_stats",
+          "type": "ttest",
+          "params": {}
+        }
+      ],
+      "source": "Whole brain volume changes and its correlation with clinical symptom severity in patients with schizophrenia: A DARTEL-based VBM study.",
+      "source_url": "https://pubmed.ncbi.nlm.nih.gov/28520743/",
+      "level": 2,
+      "category": "spm_vbm",
+      "brain_regions": [
+        "insula",
+        "superior temporal gyrus",
+        "gyrus rectus",
+        "anterior cingulate cortex"
+      ]
+    },
+    {
+      "id": "SP_精神_042",
+      "disease": "精神分裂症",
+      "query": "精神分裂症患者灰质体积与阳性与阴性症状量表（PANSS）评分的相关性分析",
+      "reference_tools": [
+        {
+          "tool": "spm_analysis",
+          "type": "vbm_segment",
+          "params": {}
+        },
+        {
+          "tool": "spm_analysis",
+          "type": "dartel_normalize",
+          "params": {}
+        },
+        {
+          "tool": "python_stats",
+          "type": "correlation",
+          "params": {}
+        }
+      ],
+      "source": "Whole brain volume changes and its correlation with clinical symptom severity in patients with schizophrenia: A DARTEL-based VBM study.",
+      "source_url": "https://pubmed.ncbi.nlm.nih.gov/28520743/",
+      "level": 2,
+      "category": "spm_vbm",
+      "brain_regions": [
+        "superior temporal gyrus",
+        "gyrus rectus",
+        "anterior cingulate cortex"
+      ]
+    },
+    {
+      "id": "FR_精神_043",
+      "disease": "精神分裂症",
+      "query": "比较精神分裂症谱系障碍患者与健康对照组在全脑皮层厚度上的差异",
+      "reference_tools": [
+        {
+          "tool": "freesurfer_analysis",
+          "type": "recon-all",
+          "params": {}
+        },
+        {
+          "tool": "roi_extraction",
+          "type": "Desikan-Killiany",
+          "params": {}
+        },
+        {
+          "tool": "python_stats",
+          "type": "ttest",
+          "params": {}
+        }
+      ],
+      "source": "A novel method of measuring cortical thickness in schizophrenia spectrum disorders: a preliminary analysis of multi-echo fast spoiled gradient echo MRI.",
+      "source_url": "https://pubmed.ncbi.nlm.nih.gov/41349229/",
+      "level": 2,
+      "category": "freesurfer",
+      "brain_regions": [
+        "bankssts",
+        "caudalanteriorcingulate",
+        "caudalmiddlefrontal",
+        "cuneus",
+        "entorhinal",
+        "fusiform",
+        "inferiorparietal",
+        "inferiortemporal",
+        "isthmuscingulate",
+        "lateraloccipital",
+        "lateralorbitofrontal",
+        "lingual",
+        "medialorbitofrontal",
+        "medialtemporal",
+        "paracentral",
+        "parahippocampal",
+        "postcentral",
+        "posteriorcingulate",
+        "precentral",
+        "precuneus",
+        "rostralanteriorcingulate",
+        "rostralmiddlefrontal",
+        "superiorfrontal",
+        "superiorparietal",
+        "superiortemporal",
+        "supramarginal",
+        "frontalpole",
+        "temporalpole",
+        "transversetemporal"
+      ]
+    },
+    {
+      "id": "FR_精神_044",
+      "disease": "精神分裂症",
+      "query": "评估多回波FSPGR序列与BRAVO-T1序列在皮层厚度测量上的一致性",
+      "reference_tools": [
+        {
+          "tool": "freesurfer_analysis",
+          "type": "recon-all",
+          "params": {}
+        },
+        {
+          "tool": "roi_extraction",
+          "type": "Desikan-Killiany",
+          "params": {}
+        },
+        {
+          "tool": "python_stats",
+          "type": "correlation",
+          "params": {}
+        }
+      ],
+      "source": "A novel method of measuring cortical thickness in schizophrenia spectrum disorders: a preliminary analysis of multi-echo fast spoiled gradient echo MRI.",
+      "source_url": "https://pubmed.ncbi.nlm.nih.gov/41349229/",
+      "level": 2,
+      "category": "freesurfer",
+      "brain_regions": [
+        "bankssts",
+        "caudalanteriorcingulate",
+        "caudalmiddlefrontal",
+        "cuneus",
+        "entorhinal",
+        "fusiform",
+        "inferiorparietal",
+        "inferiortemporal",
+        "isthmuscingulate",
+        "lateraloccipital",
+        "lateralorbitofrontal",
+        "lingual",
+        "medialorbitofrontal",
+        "medialtemporal",
+        "paracentral",
+        "parahippocampal",
+        "postcentral",
+        "posteriorcingulate",
+        "precentral",
+        "precuneus",
+        "rostralanteriorcingulate",
+        "rostralmiddlefrontal",
+        "superiorfrontal",
+        "superiorparietal",
+        "superiortemporal",
+        "supramarginal",
+        "frontalpole",
+        "temporalpole",
+        "transversetemporal"
+      ]
+    },
+    {
+      "id": "FR_精神_045",
+      "disease": "精神分裂症",
+      "query": "比较精神分裂症、双相情感障碍患者与健康对照组在非洲裔人群中的皮层厚度差异，重点关注右侧外侧眶额皮层和左侧眶部额下回",
+      "reference_tools": [
+        {
+          "tool": "freesurfer_analysis",
+          "type": "recon-all",
+          "params": {}
+        },
+        {
+          "tool": "roi_extraction",
+          "type": "Desikan-Killiany",
+          "params": {}
+        },
+        {
+          "tool": "python_stats",
+          "type": "anocva",
+          "params": {}
+        }
+      ],
+      "source": "Cortical thickness alterations in afro-descendants with schizophrenia and bipolar disorder: An exploratory analysis.",
+      "source_url": "https://pubmed.ncbi.nlm.nih.gov/41308278/",
+      "level": 2,
+      "category": "freesurfer",
+      "brain_regions": [
+        "right_lateral_orbitofrontal_cortex",
+        "left_pars_orbitalis"
+      ]
+    },
+    {
+      "id": "FR_精神_046",
+      "disease": "精神分裂症",
+      "query": "在精神分裂症和双相情感障碍患者中，分析抑郁和躁狂症状严重程度与特定脑区皮层厚度的相关性，特别是左侧海马旁回和右侧外侧眶额皮层",
+      "reference_tools": [
+        {
+          "tool": "freesurfer_analysis",
+          "type": "recon-all",
+          "params": {}
+        },
+        {
+          "tool": "roi_extraction",
+          "type": "Desikan-Killiany",
+          "params": {}
+        },
+        {
+          "tool": "python_stats",
+          "type": "correlation",
+          "params": {}
+        }
+      ],
+      "source": "Cortical thickness alterations in afro-descendants with schizophrenia and bipolar disorder: An exploratory analysis.",
+      "source_url": "https://pubmed.ncbi.nlm.nih.gov/41308278/",
+      "level": 2,
+      "category": "freesurfer",
+      "brain_regions": [
+        "left_parahippocampal_gyrus",
+        "right_lateral_orbitofrontal_cortex"
+      ]
+    },
+    {
+      "id": "FR_精神_047",
+      "disease": "精神分裂症",
+      "query": "比较高风险精神分裂症儿童与对照组之间的皮层厚度差异，并分析性别与组别交互作用",
+      "reference_tools": [
+        {
+          "tool": "freesurfer_analysis",
+          "type": "recon-all",
+          "params": {}
+        },
+        {
+          "tool": "freesurfer_analysis",
+          "type": "hippocampal_subfields",
+          "params": {}
+        },
+        {
+          "tool": "roi_extraction",
+          "type": "cortical_thickness",
+          "params": {}
+        },
+        {
+          "tool": "python_stats",
+          "type": "anova",
+          "params": {}
+        }
+      ],
+      "source": "Sex-Specific Cortical Brain Differences in Children at Familial High Risk for Schizophrenia or Bipolar Disorder.",
+      "source_url": "https://pubmed.ncbi.nlm.nih.gov/40865797/",
+      "level": 2,
+      "category": "freesurfer",
+      "brain_regions": [
+        "全脑皮层",
+        "海马及其亚区"
+      ]
+    },
+    {
+      "id": "FR_精神_048",
+      "disease": "精神分裂症",
+      "query": "提取高风险双相障碍儿童的灰质体积，并进行组间统计比较",
+      "reference_tools": [
+        {
+          "tool": "spm_analysis",
+          "type": "vbm_segment",
+          "params": {}
+        },
+        {
+          "tool": "spm_analysis",
+          "type": "dartel_normalize",
+          "params": {}
+        },
+        {
+          "tool": "spm_analysis",
+          "type": "smooth",
+          "params": {}
+        },
+        {
+          "tool": "roi_extraction",
+          "type": "gray_matter_volume",
+          "params": {}
+        },
+        {
+          "tool": "python_stats",
+          "type": "ttest",
+          "params": {}
+        }
+      ],
+      "source": "Sex-Specific Cortical Brain Differences in Children at Familial High Risk for Schizophrenia or Bipolar Disorder.",
+      "source_url": "https://pubmed.ncbi.nlm.nih.gov/40865797/",
+      "level": 2,
+      "category": "spm_vbm",
+      "brain_regions": [
+        "全脑灰质",
+        "前额叶皮层",
+        "杏仁核"
+      ]
+    },
+    {
+      "id": "FS_精神_049",
+      "disease": "精神分裂症",
+      "query": "精神分裂症患者与健康对照在白质纤维束的分数各向异性（FA）上是否存在显著差异？",
+      "reference_tools": [
+        {
+          "tool": "fsl_analysis",
+          "type": "eddy",
+          "params": {}
+        },
+        {
+          "tool": "fsl_analysis",
+          "type": "dtifit",
+          "params": {}
+        },
+        {
+          "tool": "roi_extraction",
+          "type": null,
+          "params": {}
+        },
+        {
+          "tool": "python_stats",
+          "type": "anova",
+          "params": {}
+        }
+      ],
+      "source": "Diffusion tensor imaging-based evaluation of white-matter tract alterations in schizophrenic patients with personality-related comorbidities.",
+      "source_url": "https://pubmed.ncbi.nlm.nih.gov/40945612/",
+      "level": 2,
+      "category": "fsl_dti",
+      "brain_regions": [
+        "anterior_thalamic_radiation",
+        "cingulum_bundles",
+        "corpus_callosum",
+        "inferior_fronto_occipital_fasciculus",
+        "inferior_longitudinal_fasciculus",
+        "superior_longitudinal_fasciculus",
+        "fornix",
+        "uncinate_fasciculus"
+      ]
+    },
+    {
+      "id": "FS_精神_050",
+      "disease": "精神分裂症",
+      "query": "精神分裂症患者的白质微结构指标（如FA、MD、RD、AD）是否与冲动性等人格维度存在显著相关性？",
+      "reference_tools": [
+        {
+          "tool": "fsl_analysis",
+          "type": "dtifit",
+          "params": {}
+        },
+        {
+          "tool": "roi_extraction",
+          "type": null,
+          "params": {}
+        },
+        {
+          "tool": "python_stats",
+          "type": "correlation",
+          "params": {}
+        }
+      ],
+      "source": "Diffusion tensor imaging-based evaluation of white-matter tract alterations in schizophrenic patients with personality-related comorbidities.",
+      "source_url": "https://pubmed.ncbi.nlm.nih.gov/40945612/",
+      "level": 2,
+      "category": "fsl_dti",
+      "brain_regions": [
+        "anterior_thalamic_radiation",
+        "cingulum_bundles",
+        "corpus_callosum",
+        "inferior_fronto_occipital_fasciculus"
+      ]
+    },
+    {
+      "id": "FS_精神_051",
+      "disease": "精神分裂症",
+      "query": "比较精神分裂症患者与健康对照组在全脑白质区域的扩散指标（如各向同性扩散、各向异性扩散）差异",
+      "reference_tools": [
+        {
+          "tool": "fsl_analysis",
+          "type": "eddy",
+          "params": {}
+        },
+        {
+          "tool": "fsl_analysis",
+          "type": "dtifit",
+          "params": {}
+        },
+        {
+          "tool": "fsl_analysis",
+          "type": "tbss",
+          "params": {}
+        },
+        {
+          "tool": "python_stats",
+          "type": "ttest",
+          "params": {}
+        }
+      ],
+      "source": "Diffusion basis spectrum imaging of white matter in schizophrenia and bipolar disorder.",
+      "source_url": "https://pubmed.ncbi.nlm.nih.gov/40478407/",
+      "level": 2,
+      "category": "fsl_dti",
+      "brain_regions": [
+        "全脑白质",
+        "胼胝体",
+        "额枕下束",
+        "上纵束"
+      ]
+    },
+    {
+      "id": "FS_精神_052",
+      "disease": "精神分裂症",
+      "query": "分析DBSI衍生指标与精神病性症状和情绪症状之间的相关性",
+      "reference_tools": [
+        {
+          "tool": "python_stats",
+          "type": "partial_correlation",
+          "params": {}
+        }
+      ],
+      "source": "Diffusion basis spectrum imaging of white matter in schizophrenia and bipolar disorder.",
+      "source_url": "https://pubmed.ncbi.nlm.nih.gov/40478407/",
+      "level": 1,
+      "category": "freesurfer",
+      "brain_regions": []
+    },
+    {
+      "id": "DP_精神_053",
+      "disease": "精神分裂症",
+      "query": "精神分裂症患者默认模式网络前部与感觉处理区之间的功能连接异常是否与外周炎症标志物水平相关",
+      "reference_tools": [
+        {
+          "tool": "dpabi_analysis",
+          "type": "fc",
+          "params": {}
+        },
+        {
+          "tool": "roi_extraction",
+          "type": "anterior_dmn",
+          "params": {}
+        },
+        {
+          "tool": "roi_extraction",
+          "type": "sensory_processing",
+          "params": {}
+        },
+        {
+          "tool": "python_stats",
+          "type": "correlation",
+          "params": {}
+        }
+      ],
+      "source": "Disturbed Functional Connectivity Between Anterior Default Mode and Sensory Processing Regions Is Linked to Peripheral Inflammatory Markers and Psychopathology in Schizophrenia.",
+      "source_url": "https://pubmed.ncbi.nlm.nih.gov/40263705/",
+      "level": 2,
+      "category": "dpabi",
+      "brain_regions": [
+        "默认模式网络前部",
+        "感觉处理区"
+      ]
+    },
+    {
+      "id": "DP_精神_054",
+      "disease": "精神分裂症",
+      "query": "提取精神分裂症患者海马亚区体积并检验其在患者与健康对照间的差异",
+      "reference_tools": [
+        {
+          "tool": "freesurfer_analysis",
+          "type": "hippocampal_subfields",
+          "params": {}
+        },
+        {
+          "tool": "roi_extraction",
+          "type": "hippocampus",
+          "params": {}
+        },
+        {
+          "tool": "python_stats",
+          "type": "ttest",
+          "params": {}
+        }
+      ],
+      "source": "Disturbed Functional Connectivity Between Anterior Default Mode and Sensory Processing Regions Is Linked to Peripheral Inflammatory Markers and Psychopathology in Schizophrenia.",
+      "source_url": "https://pubmed.ncbi.nlm.nih.gov/40263705/",
+      "level": 2,
+      "category": "freesurfer",
+      "brain_regions": [
+        "海马"
+      ]
+    },
+    {
+      "id": "SP_重度_055",
+      "disease": "重度抑郁症",
+      "query": "基线前额叶皮层灰质体积是否与iTBS治疗后的抑郁症状改善程度相关？",
+      "reference_tools": [
+        {
+          "tool": "freesurfer_analysis",
+          "type": "recon-all",
+          "params": {}
+        },
+        {
+          "tool": "roi_extraction",
+          "type": "volume",
+          "params": {}
+        },
+        {
+          "tool": "python_stats",
+          "type": "correlation",
+          "params": {}
+        }
+      ],
+      "source": "Antidepressant effects of intermittent theta-burst stimulation are associated with lower baseline regional gray matter volumes and surface areas in prefrontal cortex.",
+      "source_url": "https://pubmed.ncbi.nlm.nih.gov/41319360/",
+      "level": 2,
+      "category": "freesurfer",
+      "brain_regions": [
+        "prefrontal cortex"
+      ]
+    },
+    {
+      "id": "SP_重度_056",
+      "disease": "重度抑郁症",
+      "query": "重度抑郁症患者在iTBS治疗前的前额叶皮层表面积是否存在显著差异？",
+      "reference_tools": [
+        {
+          "tool": "freesurfer_analysis",
+          "type": "recon-all",
+          "params": {}
+        },
+        {
+          "tool": "roi_extraction",
+          "type": "surface_area",
+          "params": {}
+        },
+        {
+          "tool": "python_stats",
+          "type": "ttest",
+          "params": {}
+        }
+      ],
+      "source": "Antidepressant effects of intermittent theta-burst stimulation are associated with lower baseline regional gray matter volumes and surface areas in prefrontal cortex.",
+      "source_url": "https://pubmed.ncbi.nlm.nih.gov/41319360/",
+      "level": 2,
+      "category": "freesurfer",
+      "brain_regions": [
+        "prefrontal cortex"
+      ]
+    },
+    {
+      "id": "SP_重度_057",
+      "disease": "重度抑郁症",
+      "query": "比较首发未服药青少年抑郁症患者与健康对照组的皮层厚度差异",
+      "reference_tools": [
+        {
+          "tool": "freesurfer_analysis",
+          "type": "recon-all",
+          "params": {}
+        },
+        {
+          "tool": "spm_analysis",
+          "type": "dartel_normalize",
+          "params": {}
+        },
+        {
+          "tool": "python_stats",
+          "type": "ttest",
+          "params": {}
+        }
+      ],
+      "source": "Aberrant cortical morphology and brain structure similarity networks in first-episode, treatment-naive adolescents with major depressive disorder.",
+      "source_url": "https://pubmed.ncbi.nlm.nih.gov/41167432/",
+      "level": 2,
+      "category": "multi",
+      "brain_regions": [
+        "全脑皮层",
+        "前额叶",
+        "扣带回",
+        "颞叶"
+      ]
+    },
+    {
+      "id": "SP_重度_058",
+      "disease": "重度抑郁症",
+      "query": "基于灰质形态相似性构建个体化脑结构网络，并比较患者与对照组的网络拓扑属性差异",
+      "reference_tools": [
+        {
+          "tool": "freesurfer_analysis",
+          "type": "recon-all",
+          "params": {}
+        },
+        {
+          "tool": "roi_extraction",
+          "type": "gm_thickness",
+          "params": {}
+        },
+        {
+          "tool": "dpabi_analysis",
+          "type": "fc",
+          "params": {}
+        },
+        {
+          "tool": "python_stats",
+          "type": "ttest",
+          "params": {}
+        }
+      ],
+      "source": "Aberrant cortical morphology and brain structure similarity networks in first-episode, treatment-naive adolescents with major depressive disorder.",
+      "source_url": "https://pubmed.ncbi.nlm.nih.gov/41167432/",
+      "level": 2,
+      "category": "multi",
+      "brain_regions": [
+        "全脑皮层ROI",
+        "默认模式网络",
+        "边缘系统"
+      ]
+    },
+    {
+      "id": "FR_重度_059",
+      "disease": "重度抑郁症",
+      "query": "男性与女性重度抑郁症患者在伴有自杀意念时，皮层厚度是否存在显著差异？",
+      "reference_tools": [
+        {
+          "tool": "freesurfer_analysis",
+          "type": "recon-all",
+          "params": {}
+        },
+        {
+          "tool": "roi_extraction",
+          "type": "cortical_thickness",
+          "params": {}
+        },
+        {
+          "tool": "python_stats",
+          "type": "ttest",
+          "params": {}
+        }
+      ],
+      "source": "Sex Differences in Cortical Structural Alterations in Major Depressive Disorder With Suicidal Ideation.",
+      "source_url": "https://pubmed.ncbi.nlm.nih.gov/40636274/",
+      "level": 2,
+      "category": "freesurfer",
+      "brain_regions": [
+        "前额叶皮层",
+        "扣带回",
+        "颞顶联合区"
+      ]
+    },
+    {
+      "id": "FR_重度_060",
+      "disease": "重度抑郁症",
+      "query": "重度抑郁症伴自杀意念患者的海马体积是否显著减小，且存在性别差异？",
+      "reference_tools": [
+        {
+          "tool": "freesurfer_analysis",
+          "type": "hippocampal_subfields",
+          "params": {}
+        },
+        {
+          "tool": "roi_extraction",
+          "type": "hippocampus_volume",
+          "params": {}
+        },
+        {
+          "tool": "python_stats",
+          "type": "anova",
+          "params": {}
+        }
+      ],
+      "source": "Sex Differences in Cortical Structural Alterations in Major Depressive Disorder With Suicidal Ideation.",
+      "source_url": "https://pubmed.ncbi.nlm.nih.gov/40636274/",
+      "level": 2,
+      "category": "freesurfer",
+      "brain_regions": [
+        "海马"
+      ]
+    },
+    {
+      "id": "SP_重度_061",
+      "disease": "重度抑郁症",
+      "query": "比较警察与对照组在海马亚区体积上的差异，探讨职业应激对海马结构的影响",
+      "reference_tools": [
+        {
+          "tool": "freesurfer_analysis",
+          "type": "recon-all",
+          "params": {}
+        },
+        {
+          "tool": "freesurfer_analysis",
+          "type": "hippocampal_subfields",
+          "params": {}
+        },
+        {
+          "tool": "roi_extraction",
+          "type": null,
+          "params": {}
+        },
+        {
+          "tool": "python_stats",
+          "type": "ttest",
+          "params": {}
+        }
+      ],
+      "source": "Neurobiological and emotional impact of occupational stress in frontline police officers: a neuroimaging and neurochemical study.",
+      "source_url": "https://pubmed.ncbi.nlm.nih.gov/41186097/",
+      "level": 2,
+      "category": "freesurfer",
+      "brain_regions": [
+        "海马",
+        "海马亚区"
+      ]
+    },
+    {
+      "id": "SP_重度_062",
+      "disease": "重度抑郁症",
+      "query": "分析警察群体中焦虑水平与默认网络内功能连接强度的相关性",
+      "reference_tools": [
+        {
+          "tool": "dpabi_analysis",
+          "type": "fc",
+          "params": {}
+        },
+        {
+          "tool": "roi_extraction",
+          "type": null,
+          "params": {}
+        },
+        {
+          "tool": "python_stats",
+          "type": "correlation",
+          "params": {}
+        }
+      ],
+      "source": "Neurobiological and emotional impact of occupational stress in frontline police officers: a neuroimaging and neurochemical study.",
+      "source_url": "https://pubmed.ncbi.nlm.nih.gov/41186097/",
+      "level": 2,
+      "category": "dpabi",
+      "brain_regions": [
+        "默认网络",
+        "内侧前额叶皮层",
+        "后扣带回"
+      ]
+    },
+    {
+      "id": "SP_重度_063",
+      "disease": "重度抑郁症",
+      "query": "比较焦虑型抑郁症患者与非焦虑型抑郁症患者的海马亚区体积差异",
+      "reference_tools": [
+        {
+          "tool": "freesurfer_analysis",
+          "type": "hippocampal_subfields",
+          "params": {}
+        },
+        {
+          "tool": "roi_extraction",
+          "type": "hippocampal_subfields",
+          "params": {}
+        },
+        {
+          "tool": "python_stats",
+          "type": "ttest",
+          "params": {}
+        }
+      ],
+      "source": "Structural brain alterations in patients with anxious depression: evidence from the REST-meta-MDD project.",
+      "source_url": "https://pubmed.ncbi.nlm.nih.gov/40787685/",
+      "level": 2,
+      "category": "freesurfer",
+      "brain_regions": [
+        "海马体",
+        "海马亚区"
+      ]
+    },
+    {
+      "id": "SP_重度_064",
+      "disease": "重度抑郁症",
+      "query": "分析焦虑型抑郁症患者全脑灰质体积的改变",
+      "reference_tools": [
+        {
+          "tool": "spm_analysis",
+          "type": "vbm_segment",
+          "params": {}
+        },
+        {
+          "tool": "spm_analysis",
+          "type": "dartel_normalize",
+          "params": {}
+        },
+        {
+          "tool": "spm_analysis",
+          "type": "smooth",
+          "params": {}
+        },
+        {
+          "tool": "python_stats",
+          "type": "ttest",
+          "params": {}
+        }
+      ],
+      "source": "Structural brain alterations in patients with anxious depression: evidence from the REST-meta-MDD project.",
+      "source_url": "https://pubmed.ncbi.nlm.nih.gov/40787685/",
+      "level": 2,
+      "category": "spm_vbm",
+      "brain_regions": [
+        "全脑灰质"
+      ]
+    },
+    {
+      "id": "FR_重度_065",
+      "disease": "重度抑郁症",
+      "query": "比较HIV感染者中伴有重度抑郁症与不伴抑郁症群体的海马体积差异",
+      "reference_tools": [
+        {
+          "tool": "freesurfer_analysis",
+          "type": "recon-all",
+          "params": {}
+        },
+        {
+          "tool": "roi_extraction",
+          "type": "hippocampal_subfields",
+          "params": {}
+        },
+        {
+          "tool": "python_stats",
+          "type": "ttest",
+          "params": {}
+        }
+      ],
+      "source": "Assessment of Brain Volume and Cortical Thickness in People with HIV and Major Depressive Disorder.",
+      "source_url": "https://pubmed.ncbi.nlm.nih.gov/40539340/",
+      "level": 2,
+      "category": "freesurfer",
+      "brain_regions": [
+        "海马"
+      ]
+    },
+    {
+      "id": "FR_重度_066",
+      "disease": "重度抑郁症",
+      "query": "分析三组人群（抑郁HIV感染者、非抑郁HIV感染者、健康对照）在全脑灰质体积上的差异",
+      "reference_tools": [
+        {
+          "tool": "spm_analysis",
+          "type": "vbm_segment",
+          "params": {}
+        },
+        {
+          "tool": "spm_analysis",
+          "type": "dartel_normalize",
+          "params": {}
+        },
+        {
+          "tool": "spm_analysis",
+          "type": "smooth",
+          "params": {}
+        },
+        {
+          "tool": "python_stats",
+          "type": "anova",
+          "params": {}
+        }
+      ],
+      "source": "Assessment of Brain Volume and Cortical Thickness in People with HIV and Major Depressive Disorder.",
+      "source_url": "https://pubmed.ncbi.nlm.nih.gov/40539340/",
+      "level": 2,
+      "category": "spm_vbm",
+      "brain_regions": [
+        "全脑灰质"
+      ]
+    },
+    {
+      "id": "DP_重度_067",
+      "disease": "重度抑郁症",
+      "query": "比较有自杀意念和无自杀意念的重度抑郁症患者在静息态下前扣带回皮层的功能连接差异",
+      "reference_tools": [
+        {
+          "tool": "dpabi_analysis",
+          "type": "fc",
+          "params": {}
+        },
+        {
+          "tool": "roi_extraction",
+          "type": "anterior_cingulate_cortex",
+          "params": {}
+        },
+        {
+          "tool": "python_stats",
+          "type": "ttest",
+          "params": {}
+        }
+      ],
+      "source": "Differential brain regional activity and connectivity of anterior cingulate cortex between major depressive disorder with and without suicidal ideation under resting state.",
+      "source_url": "https://pubmed.ncbi.nlm.nih.gov/41332348/",
+      "level": 2,
+      "category": "dpabi",
+      "brain_regions": [
+        "anterior cingulate cortex"
+      ]
+    },
+    {
+      "id": "DP_重度_068",
+      "disease": "重度抑郁症",
+      "query": "提取重度抑郁症患者海马亚区体积，并比较有无自杀意念组间的结构差异",
+      "reference_tools": [
+        {
+          "tool": "freesurfer_analysis",
+          "type": "hippocampal_subfields",
+          "params": {}
+        },
+        {
+          "tool": "roi_extraction",
+          "type": "hippocampus",
+          "params": {}
+        },
+        {
+          "tool": "python_stats",
+          "type": "ttest",
+          "params": {}
+        }
+      ],
+      "source": "Differential brain regional activity and connectivity of anterior cingulate cortex between major depressive disorder with and without suicidal ideation under resting state.",
+      "source_url": "https://pubmed.ncbi.nlm.nih.gov/41332348/",
+      "level": 2,
+      "category": "freesurfer",
+      "brain_regions": [
+        "hippocampus"
+      ]
+    },
+    {
+      "id": "DP_重度_069",
+      "disease": "重度抑郁症",
+      "query": "重度抑郁症患者中，隐式自杀意念是否与右顶下小叶的低频振幅异常相关？",
+      "reference_tools": [
+        {
+          "tool": "dpabi_analysis",
+          "type": "alff",
+          "params": {}
+        },
+        {
+          "tool": "python_stats",
+          "type": "correlation",
+          "params": {}
+        }
+      ],
+      "source": "Alterations in resting-state ALFF and functional connectivity linked to implicit and explicit suicidal ideations in depression.",
+      "source_url": "https://pubmed.ncbi.nlm.nih.gov/41260561/",
+      "level": 1,
+      "category": "dpabi",
+      "brain_regions": [
+        "right postcentral gyrus"
+      ]
+    },
+    {
+      "id": "DP_重度_070",
+      "disease": "重度抑郁症",
+      "query": "在重度抑郁症患者中，隐式与显式自杀意念相关的静息态功能连接网络是否存在差异？具体表现为右顶下小叶与右侧额上回、中回等功能连接增强，左脑岛与左侧额上回以及右颞中回与左侧顶下小叶连接模式不同。",
+      "reference_tools": [
+        {
+          "tool": "dpabi_analysis",
+          "type": "fc",
+          "params": {}
+        },
+        {
+          "tool": "roi_extraction",
+          "type": null,
+          "params": {}
+        },
+        {
+          "tool": "python_stats",
+          "type": "ttest",
+          "params": {}
+        }
+      ],
+      "source": "Alterations in resting-state ALFF and functional connectivity linked to implicit and explicit suicidal ideations in depression.",
+      "source_url": "https://pubmed.ncbi.nlm.nih.gov/41260561/",
+      "level": 2,
+      "category": "dpabi",
+      "brain_regions": [
+        "right postcentral gyrus",
+        "right SFG",
+        "right MFG",
+        "right MTG",
+        "right SPG",
+        "insula",
+        "amygdala",
+        "left insula",
+        "left SFG",
+        "left MFG",
+        "IPL"
+      ]
+    },
+    {
+      "id": "DP_重度_071",
+      "disease": "重度抑郁症",
+      "query": "重度抑郁症患者在静息态下是否存在低频振幅（ALFF）的异常，并且这些异常是否与疾病严重程度相关",
+      "reference_tools": [
+        {
+          "tool": "dpabi_analysis",
+          "type": "alff",
+          "params": {}
+        },
+        {
+          "tool": "roi_extraction",
+          "type": "whole_brain",
+          "params": {}
+        },
+        {
+          "tool": "python_stats",
+          "type": "correlation",
+          "params": {}
+        }
+      ],
+      "source": "Neurovascular coupling abnormalities in first-episode drug-naïve major depressive disorder patients.",
+      "source_url": "https://pubmed.ncbi.nlm.nih.gov/41194035/",
+      "level": 2,
+      "category": "dpabi",
+      "brain_regions": [
+        "默认模式网络",
+        "前扣带回",
+        "杏仁核",
+        "前额叶皮层"
+      ]
+    },
+    {
+      "id": "DP_重度_072",
+      "disease": "重度抑郁症",
+      "query": "重度抑郁症患者海马亚区体积是否存在显著变化",
+      "reference_tools": [
+        {
+          "tool": "freesurfer_analysis",
+          "type": "hippocampal_subfields",
+          "params": {}
+        },
+        {
+          "tool": "python_stats",
+          "type": "ttest",
+          "params": {}
+        }
+      ],
+      "source": "Neurovascular coupling abnormalities in first-episode drug-naïve major depressive disorder patients.",
+      "source_url": "https://pubmed.ncbi.nlm.nih.gov/41194035/",
+      "level": 1,
+      "category": "freesurfer",
+      "brain_regions": [
+        "海马体",
+        "CA1",
+        "齿状回"
+      ]
+    },
+    {
+      "id": "FS_多发_073",
+      "disease": "多发性硬化症",
+      "query": "正常表现白质（NAWM）的扩散张量成像（DTI）指标是否与多发性硬化症患者的临床残疾程度相关？",
+      "reference_tools": [
+        {
+          "tool": "fsl_analysis",
+          "type": "eddy",
+          "params": {}
+        },
+        {
+          "tool": "fsl_analysis",
+          "type": "dtifit",
+          "params": {}
+        },
+        {
+          "tool": "freesurfer_analysis",
+          "type": "recon-all",
+          "params": {}
+        },
+        {
+          "tool": "roi_extraction",
+          "type": "nawm_mask",
+          "params": {}
+        },
+        {
+          "tool": "python_stats",
+          "type": "correlation",
+          "params": {}
+        }
+      ],
+      "source": "Normal appearing white matter and disability in multiple sclerosis.",
+      "source_url": "https://pubmed.ncbi.nlm.nih.gov/41282678/",
+      "level": 2,
+      "category": "multi",
+      "brain_regions": [
+        "normal-appearing white matter",
+        "white matter"
+      ]
+    },
+    {
+      "id": "FS_多发_074",
+      "disease": "多发性硬化症",
+      "query": "在控制脑萎缩和病灶负荷后，DKI指标能否在正常表现白质中额外解释多发性硬化症的残疾变异？",
+      "reference_tools": [
+        {
+          "tool": "fsl_analysis",
+          "type": "eddy",
+          "params": {}
+        },
+        {
+          "tool": "fsl_analysis",
+          "type": "dtifit",
+          "params": {}
+        },
+        {
+          "tool": "freesurfer_analysis",
+          "type": "recon-all",
+          "params": {}
+        },
+        {
+          "tool": "spm_analysis",
+          "type": "vbm_segment",
+          "params": {}
+        },
+        {
+          "tool": "roi_extraction",
+          "type": "lesion_mask",
+          "params": {}
+        },
+        {
+          "tool": "python_stats",
+          "type": "anova",
+          "params": {}
+        }
+      ],
+      "source": "Normal appearing white matter and disability in multiple sclerosis.",
+      "source_url": "https://pubmed.ncbi.nlm.nih.gov/41282678/",
+      "level": 2,
+      "category": "multi",
+      "brain_regions": [
+        "normal-appearing white matter",
+        "white matter"
+      ]
+    },
+    {
+      "id": "SP_多发_075",
+      "disease": "多发性硬化症",
+      "query": "多发性硬化症患者脑区萎缩程度与T2病变负荷之间的相关性分析",
+      "reference_tools": [
+        {
+          "tool": "freesurfer_analysis",
+          "type": "recon-all",
+          "params": {}
+        },
+        {
+          "tool": "roi_extraction",
+          "type": "volume",
+          "params": {}
+        },
+        {
+          "tool": "python_stats",
+          "type": "correlation",
+          "params": {}
+        }
+      ],
+      "source": "Assessment of brain atrophy as a promising marker of radiological activity in patients with relapsing-remitting multiple sclerosis.",
+      "source_url": "https://pubmed.ncbi.nlm.nih.gov/41127060/",
+      "level": 2,
+      "category": "freesurfer",
+      "brain_regions": [
+        "whole_brain",
+        "gray_matter",
+        "white_matter"
+      ]
+    },
+    {
+      "id": "SP_多发_076",
+      "disease": "多发性硬化症",
+      "query": "对比多发性硬化症患者与健康对照组的全脑灰质体积差异",
+      "reference_tools": [
+        {
+          "tool": "spm_analysis",
+          "type": "vbm_segment",
+          "params": {}
+        },
+        {
+          "tool": "spm_analysis",
+          "type": "dartel_normalize",
+          "params": {}
+        },
+        {
+          "tool": "spm_analysis",
+          "type": "smooth",
+          "params": {}
+        },
+        {
+          "tool": "python_stats",
+          "type": "ttest",
+          "params": {}
+        }
+      ],
+      "source": "Assessment of brain atrophy as a promising marker of radiological activity in patients with relapsing-remitting multiple sclerosis.",
+      "source_url": "https://pubmed.ncbi.nlm.nih.gov/41127060/",
+      "level": 2,
+      "category": "spm_vbm",
+      "brain_regions": [
+        "gray_matter"
+      ]
+    },
+    {
+      "id": "SP_多发_077",
+      "disease": "多发性硬化症",
+      "query": "多发性硬化症患者杏仁核体积是否与EDSS评分相关？",
+      "reference_tools": [
+        {
+          "tool": "freesurfer_analysis",
+          "type": "recon-all",
+          "params": {}
+        },
+        {
+          "tool": "roi_extraction",
+          "type": "amygdala_volume",
+          "params": {}
+        },
+        {
+          "tool": "python_stats",
+          "type": "correlation",
+          "params": {}
+        }
+      ],
+      "source": "Amygdala volume changes as a potential marker of multiple sclerosis progression: links to EDSS scores and PIRA.",
+      "source_url": "https://pubmed.ncbi.nlm.nih.gov/40933987/",
+      "level": 2,
+      "category": "freesurfer",
+      "brain_regions": [
+        "amygdala"
+      ]
+    },
+    {
+      "id": "SP_多发_078",
+      "disease": "多发性硬化症",
+      "query": "多发性硬化症患者在Cladribine或Alemtuzumab治疗后，灰质体积变化是否与PIRA进展相关？",
+      "reference_tools": [
+        {
+          "tool": "spm_analysis",
+          "type": "vbm_segment",
+          "params": {}
+        },
+        {
+          "tool": "spm_analysis",
+          "type": "dartel_normalize",
+          "params": {}
+        },
+        {
+          "tool": "spm_analysis",
+          "type": "smooth",
+          "params": {}
+        },
+        {
+          "tool": "roi_extraction",
+          "type": "gray_matter_volume",
+          "params": {}
+        },
+        {
+          "tool": "python_stats",
+          "type": "correlation",
+          "params": {}
+        }
+      ],
+      "source": "Amygdala volume changes as a potential marker of multiple sclerosis progression: links to EDSS scores and PIRA.",
+      "source_url": "https://pubmed.ncbi.nlm.nih.gov/40933987/",
+      "level": 2,
+      "category": "spm_vbm",
+      "brain_regions": [
+        "gray_matter"
+      ]
+    },
+    {
+      "id": "FS_多发_079",
+      "disease": "多发性硬化症",
+      "query": "比较多发性硬化症患者与健康对照组在全脑白质微结构完整性上的差异，基于多壳扩散MRI数据计算FA值",
+      "reference_tools": [
+        {
+          "tool": "fsl_analysis",
+          "type": "eddy",
+          "params": {}
+        },
+        {
+          "tool": "fsl_analysis",
+          "type": "dtifit",
+          "params": {}
+        },
+        {
+          "tool": "fsl_analysis",
+          "type": "tbss",
+          "params": {}
+        },
+        {
+          "tool": "python_stats",
+          "type": "ttest",
+          "params": {}
+        }
+      ],
+      "source": "A cross-sectional multicentre study of multishell diffusion MRI in multiple sclerosis.",
+      "source_url": "https://pubmed.ncbi.nlm.nih.gov/40233645/",
+      "level": 2,
+      "category": "fsl_dti",
+      "brain_regions": [
+        "全脑白质"
+      ]
+    },
+    {
+      "id": "FS_多发_080",
+      "disease": "多发性硬化症",
+      "query": "提取多发性硬化症患者与健康对照组的海马体积，并比较两组间的结构差异",
+      "reference_tools": [
+        {
+          "tool": "freesurfer_analysis",
+          "type": "recon-all",
+          "params": {}
+        },
+        {
+          "tool": "roi_extraction",
+          "type": "hippocampus",
+          "params": {}
+        },
+        {
+          "tool": "python_stats",
+          "type": "ttest",
+          "params": {}
+        }
+      ],
+      "source": "A cross-sectional multicentre study of multishell diffusion MRI in multiple sclerosis.",
+      "source_url": "https://pubmed.ncbi.nlm.nih.gov/40233645/",
+      "level": 2,
+      "category": "freesurfer",
+      "brain_regions": [
+        "海马"
+      ]
+    },
+    {
+      "id": "FS_多发_081",
+      "disease": "多发性硬化症",
+      "query": "多发性硬化症患者脑白质微结构改变是否与膀胱过度活动症状严重程度相关？",
+      "reference_tools": [
+        {
+          "tool": "fsl_analysis",
+          "type": "eddy",
+          "params": {}
+        },
+        {
+          "tool": "fsl_analysis",
+          "type": "dtifit",
+          "params": {}
+        },
+        {
+          "tool": "fsl_analysis",
+          "type": "tbss",
+          "params": {}
+        },
+        {
+          "tool": "roi_extraction",
+          "type": null,
+          "params": {}
+        },
+        {
+          "tool": "python_stats",
+          "type": "correlation",
+          "params": {}
+        }
+      ],
+      "source": "White Matter Magnetic Resonance Diffusion Measures in Multiple Sclerosis with Overactive Bladder.",
+      "source_url": "https://pubmed.ncbi.nlm.nih.gov/39451989/",
+      "level": 2,
+      "category": "fsl_dti",
+      "brain_regions": [
+        "corpus_callosum",
+        "frontal_white_matter",
+        "corticospinal_tract"
+      ]
+    },
+    {
+      "id": "FS_多发_082",
+      "disease": "多发性硬化症",
+      "query": "多发性硬化症患者灰质体积是否在与排尿控制相关的脑区存在显著差异？",
+      "reference_tools": [
+        {
+          "tool": "spm_analysis",
+          "type": "vbm_segment",
+          "params": {}
+        },
+        {
+          "tool": "spm_analysis",
+          "type": "dartel_normalize",
+          "params": {}
+        },
+        {
+          "tool": "spm_analysis",
+          "type": "smooth",
+          "params": {}
+        },
+        {
+          "tool": "roi_extraction",
+          "type": null,
+          "params": {}
+        },
+        {
+          "tool": "python_stats",
+          "type": "ttest",
+          "params": {}
+        }
+      ],
+      "source": "White Matter Magnetic Resonance Diffusion Measures in Multiple Sclerosis with Overactive Bladder.",
+      "source_url": "https://pubmed.ncbi.nlm.nih.gov/39451989/",
+      "level": 2,
+      "category": "spm_vbm",
+      "brain_regions": [
+        "anterior_cingulate_cortex",
+        "insula",
+        "prefrontal_cortex"
+      ]
+    },
+    {
+      "id": "FS_多发_083",
+      "disease": "多发性硬化症",
+      "query": "多发性硬化患者与健康对照组之间的白质微结构损伤程度是否存在显著差异？",
+      "reference_tools": [
+        {
+          "tool": "fsl_analysis",
+          "type": "eddy",
+          "params": {}
+        },
+        {
+          "tool": "fsl_analysis",
+          "type": "dtifit",
+          "params": {}
+        },
+        {
+          "tool": "fsl_analysis",
+          "type": "tbss",
+          "params": {}
+        },
+        {
+          "tool": "python_stats",
+          "type": "ttest",
+          "params": {}
+        }
+      ],
+      "source": "Severity of white matter microstructural damage in a Brazilian relapsing-remitting multiple sclerosis cohort: A possible window to optimize treatment.",
+      "source_url": "https://pubmed.ncbi.nlm.nih.gov/37915211/",
+      "level": 2,
+      "category": "fsl_dti",
+      "brain_regions": [
+        "白质纤维束",
+        "胼胝体",
+        "内囊",
+        "皮质脊髓束"
+      ]
+    },
+    {
+      "id": "FS_多发_084",
+      "disease": "多发性硬化症",
+      "query": "多发性硬化患者脑内灰质体积是否显著减少，特别是在海马区域？",
+      "reference_tools": [
+        {
+          "tool": "freesurfer_analysis",
+          "type": "recon-all",
+          "params": {}
+        },
+        {
+          "tool": "freesurfer_analysis",
+          "type": "hippocampal_subfields",
+          "params": {}
+        },
+        {
+          "tool": "roi_extraction",
+          "type": "volume_based",
+          "params": {}
+        },
+        {
+          "tool": "python_stats",
+          "type": "anova",
+          "params": {}
+        }
+      ],
+      "source": "Severity of white matter microstructural damage in a Brazilian relapsing-remitting multiple sclerosis cohort: A possible window to optimize treatment.",
+      "source_url": "https://pubmed.ncbi.nlm.nih.gov/37915211/",
+      "level": 2,
+      "category": "freesurfer",
+      "brain_regions": [
+        "海马",
+        "杏仁核",
+        "丘脑",
+        "全脑灰质"
+      ]
+    },
+    {
+      "id": "SP_多发_085",
+      "disease": "多发性硬化症",
+      "query": "比较良性复发缓解型多发性硬化患者与健康对照组的全脑皮层厚度差异",
+      "reference_tools": [
+        {
+          "tool": "freesurfer_analysis",
+          "type": "recon-all",
+          "params": {}
+        },
+        {
+          "tool": "roi_extraction",
+          "type": "cortical_thickness",
+          "params": {}
+        },
+        {
+          "tool": "python_stats",
+          "type": "ttest",
+          "params": {}
+        }
+      ],
+      "source": "AI-driven MRI analysis reveals brain atrophy patterns in benign relapsing-remitting multiple sclerosis.",
+      "source_url": "https://pubmed.ncbi.nlm.nih.gov/40417125/",
+      "level": 2,
+      "category": "freesurfer",
+      "brain_regions": [
+        "全脑皮层",
+        "额叶",
+        "颞叶",
+        "顶叶",
+        "枕叶"
+      ]
+    },
+    {
+      "id": "SP_多发_086",
+      "disease": "多发性硬化症",
+      "query": "分析良性复发缓解型多发性硬化患者的海马亚区体积变化",
+      "reference_tools": [
+        {
+          "tool": "freesurfer_analysis",
+          "type": "hippocampal_subfields",
+          "params": {}
+        },
+        {
+          "tool": "roi_extraction",
+          "type": "subfield_volume",
+          "params": {}
+        },
+        {
+          "tool": "python_stats",
+          "type": "anova",
+          "params": {}
+        }
+      ],
+      "source": "AI-driven MRI analysis reveals brain atrophy patterns in benign relapsing-remitting multiple sclerosis.",
+      "source_url": "https://pubmed.ncbi.nlm.nih.gov/40417125/",
+      "level": 2,
+      "category": "freesurfer",
+      "brain_regions": [
+        "海马",
+        "CA1",
+        "CA2",
+        "CA3",
+        "齿状回",
+        "下托"
+      ]
+    },
+    {
+      "id": "SP_多发_087",
+      "disease": "多发性硬化症",
+      "query": "多发性硬化症患者的脑白质病变体积是否显著大于健康对照组？",
+      "reference_tools": [
+        {
+          "tool": "freesurfer_analysis",
+          "type": "recon-all",
+          "params": {}
+        },
+        {
+          "tool": "freesurfer_analysis",
+          "type": "hippocampal_subfields",
+          "params": {}
+        },
+        {
+          "tool": "python_stats",
+          "type": "ttest",
+          "params": {}
+        }
+      ],
+      "source": "The role of AI for MRI-analysis in multiple sclerosis-A brief overview.",
+      "source_url": "https://pubmed.ncbi.nlm.nih.gov/40265105/",
+      "level": 2,
+      "category": "freesurfer",
+      "brain_regions": [
+        "白质",
+        "海马"
+      ]
+    },
+    {
+      "id": "SP_多发_088",
+      "disease": "多发性硬化症",
+      "query": "基于体素的形态学分析是否发现多发性硬化症患者在灰质体积上存在显著萎缩？",
+      "reference_tools": [
+        {
+          "tool": "spm_analysis",
+          "type": "vbm_segment",
+          "params": {}
+        },
+        {
+          "tool": "spm_analysis",
+          "type": "dartel_normalize",
+          "params": {}
+        },
+        {
+          "tool": "spm_analysis",
+          "type": "smooth",
+          "params": {}
+        },
+        {
+          "tool": "python_stats",
+          "type": "anova",
+          "params": {}
+        }
+      ],
+      "source": "The role of AI for MRI-analysis in multiple sclerosis-A brief overview.",
+      "source_url": "https://pubmed.ncbi.nlm.nih.gov/40265105/",
+      "level": 2,
+      "category": "spm_vbm",
+      "brain_regions": [
+        "全脑灰质",
+        "丘脑",
+        "小脑"
+      ]
+    },
+    {
+      "id": "SP_多发_089",
+      "disease": "多发性硬化症",
+      "query": "比较多发性硬化症患者在合成FLAIR与常规FLAIR图像上的脑部病灶体积差异",
+      "reference_tools": [
+        {
+          "tool": "fsl_analysis",
+          "type": "eddy",
+          "params": {}
+        },
+        {
+          "tool": "spm_analysis",
+          "type": "vbm_segment",
+          "params": {}
+        },
+        {
+          "tool": "roi_extraction",
+          "type": "lesion_mask",
+          "params": {}
+        },
+        {
+          "tool": "python_stats",
+          "type": "ttest",
+          "params": {}
+        }
+      ],
+      "source": "Lesion assessment in multiple sclerosis: a comparison between synthetic and conventional fluid-attenuated inversion recovery imaging.",
+      "source_url": "https://pubmed.ncbi.nlm.nih.gov/40144619/",
+      "level": 2,
+      "category": "multi",
+      "brain_regions": [
+        "white_matter",
+        "periventricular_region",
+        "cortical_junction"
+      ]
+    },
+    {
+      "id": "SP_多发_090",
+      "disease": "多发性硬化症",
+      "query": "评估合成FLAIR图像与常规FLAIR图像在多发性硬化症病灶分割数量上的一致性",
+      "reference_tools": [
+        {
+          "tool": "spm_analysis",
+          "type": "vbm_segment",
+          "params": {}
+        },
+        {
+          "tool": "roi_extraction",
+          "type": "lesion_count",
+          "params": {}
+        },
+        {
+          "tool": "python_stats",
+          "type": "anova",
+          "params": {}
+        }
+      ],
+      "source": "Lesion assessment in multiple sclerosis: a comparison between synthetic and conventional fluid-attenuated inversion recovery imaging.",
+      "source_url": "https://pubmed.ncbi.nlm.nih.gov/40144619/",
+      "level": 2,
+      "category": "spm_vbm",
+      "brain_regions": [
+        "whole_brain"
+      ]
+    },
+    {
+      "id": "SP_颞叶_091",
+      "disease": "颞叶癫痫",
+      "query": "比较颞叶癫痫患者与健康对照组的海马体积差异",
+      "reference_tools": [
+        {
+          "tool": "freesurfer_analysis",
+          "type": "recon-all",
+          "params": {}
+        },
+        {
+          "tool": "roi_extraction",
+          "type": "hippocampal_subfields",
+          "params": {}
+        },
+        {
+          "tool": "python_stats",
+          "type": "ttest",
+          "params": {}
+        }
+      ],
+      "source": "Analysis of brain volume in hippocampal sclerotic temporal lobe epilepsy using automatic brain segmentation technology.",
+      "source_url": "https://pubmed.ncbi.nlm.nih.gov/41081206/",
+      "level": 2,
+      "category": "freesurfer",
+      "brain_regions": [
+        "海马"
+      ]
+    },
+    {
+      "id": "SP_颞叶_092",
+      "disease": "颞叶癫痫",
+      "query": "评估颞叶癫痫患者全脑灰质体积的变化",
+      "reference_tools": [
+        {
+          "tool": "spm_analysis",
+          "type": "vbm_segment",
+          "params": {}
+        },
+        {
+          "tool": "spm_analysis",
+          "type": "dartel_normalize",
+          "params": {}
+        },
+        {
+          "tool": "spm_analysis",
+          "type": "smooth",
+          "params": {}
+        },
+        {
+          "tool": "python_stats",
+          "type": "ttest",
+          "params": {}
+        }
+      ],
+      "source": "Analysis of brain volume in hippocampal sclerotic temporal lobe epilepsy using automatic brain segmentation technology.",
+      "source_url": "https://pubmed.ncbi.nlm.nih.gov/41081206/",
+      "level": 2,
+      "category": "spm_vbm",
+      "brain_regions": [
+        "全脑灰质"
+      ]
+    },
+    {
+      "id": "FR_颞叶_093",
+      "disease": "颞叶癫痫",
+      "query": "颞叶癫痫患者与健康对照组相比，海马体体积是否存在显著差异？",
+      "reference_tools": [
+        {
+          "tool": "freesurfer_analysis",
+          "type": "recon-all",
+          "params": {}
+        },
+        {
+          "tool": "roi_extraction",
+          "type": "hippocampal_subfields",
+          "params": {}
+        },
+        {
+          "tool": "python_stats",
+          "type": "ttest",
+          "params": {}
+        }
+      ],
+      "source": "Quantitative brain volumetry in neurological disorders: from disease mechanisms to software solutions.",
+      "source_url": "https://pubmed.ncbi.nlm.nih.gov/40642198/",
+      "level": 2,
+      "category": "freesurfer",
+      "brain_regions": [
+        "海马体"
+      ]
+    },
+    {
+      "id": "FR_颞叶_094",
+      "disease": "颞叶癫痫",
+      "query": "颞叶癫痫患者双侧海马体体积是否呈现不对称性，并与疾病持续时间相关？",
+      "reference_tools": [
+        {
+          "tool": "freesurfer_analysis",
+          "type": "recon-all",
+          "params": {}
+        },
+        {
+          "tool": "roi_extraction",
+          "type": "hippocampal_subfields",
+          "params": {}
+        },
+        {
+          "tool": "python_stats",
+          "type": "correlation",
+          "params": {}
+        }
+      ],
+      "source": "Quantitative brain volumetry in neurological disorders: from disease mechanisms to software solutions.",
+      "source_url": "https://pubmed.ncbi.nlm.nih.gov/40642198/",
+      "level": 2,
+      "category": "freesurfer",
+      "brain_regions": [
+        "左侧海马体",
+        "右侧海马体"
+      ]
+    },
+    {
+      "id": "SP_颞叶_095",
+      "disease": "颞叶癫痫",
+      "query": "颞叶癫痫患者患侧与健侧海马体积是否存在显著差异？",
+      "reference_tools": [
+        {
+          "tool": "freesurfer_analysis",
+          "type": "recon-all",
+          "params": {}
+        },
+        {
+          "tool": "roi_extraction",
+          "type": "hippocampal_subfields",
+          "params": {}
+        },
+        {
+          "tool": "python_stats",
+          "type": "ttest",
+          "params": {}
+        }
+      ],
+      "source": "Exploring Cortical and Hippocampal Changes in Temporal Lobe Epilepsy Using Automated MRI Segmentation Techniques.",
+      "source_url": "https://pubmed.ncbi.nlm.nih.gov/39678688/",
+      "level": 2,
+      "category": "freesurfer",
+      "brain_regions": [
+        "海马",
+        "左侧海马",
+        "右侧海马"
+      ]
+    },
+    {
+      "id": "SP_颞叶_096",
+      "disease": "颞叶癫痫",
+      "query": "颞叶癫痫患者全脑皮层厚度是否在双侧颞叶区域显著减小？",
+      "reference_tools": [
+        {
+          "tool": "freesurfer_analysis",
+          "type": "recon-all",
+          "params": {}
+        },
+        {
+          "tool": "roi_extraction",
+          "type": "cortical_thickness",
+          "params": {}
+        },
+        {
+          "tool": "python_stats",
+          "type": "anova",
+          "params": {}
+        }
+      ],
+      "source": "Exploring Cortical and Hippocampal Changes in Temporal Lobe Epilepsy Using Automated MRI Segmentation Techniques.",
+      "source_url": "https://pubmed.ncbi.nlm.nih.gov/39678688/",
+      "level": 2,
+      "category": "freesurfer",
+      "brain_regions": [
+        "颞叶",
+        "左侧颞叶",
+        "右侧颞叶"
+      ]
+    },
+    {
+      "id": "SP_颞叶_097",
+      "disease": "颞叶癫痫",
+      "query": "分析颞叶癫痫患者海马亚区和小脑灰质体积的萎缩模式",
+      "reference_tools": [
+        {
+          "tool": "freesurfer_analysis",
+          "type": "recon-all",
+          "params": {}
+        },
+        {
+          "tool": "freesurfer_analysis",
+          "type": "hippocampal_subfields",
+          "params": {}
+        },
+        {
+          "tool": "spm_analysis",
+          "type": "vbm_segment",
+          "params": {}
+        },
+        {
+          "tool": "roi_extraction",
+          "type": "cerebellar_subregions",
+          "params": {}
+        },
+        {
+          "tool": "python_stats",
+          "type": "ttest",
+          "params": {}
+        }
+      ],
+      "source": "Atrophy patterns of gray matter volume and the correlation with the disease duration in the cerebellum and hippocampal subregions in mesial temporal lobe epilepsy.",
+      "source_url": "https://pubmed.ncbi.nlm.nih.gov/41075529/",
+      "level": 2,
+      "category": "multi",
+      "brain_regions": [
+        "海马亚区",
+        "小脑"
+      ]
+    },
+    {
+      "id": "SP_颞叶_098",
+      "disease": "颞叶癫痫",
+      "query": "探究海马和小脑灰质体积变化与病程持续时间的相关性",
+      "reference_tools": [
+        {
+          "tool": "freesurfer_analysis",
+          "type": "hippocampal_subfields",
+          "params": {}
+        },
+        {
+          "tool": "roi_extraction",
+          "type": "cerebellar_subregions",
+          "params": {}
+        },
+        {
+          "tool": "python_stats",
+          "type": "correlation",
+          "params": {}
+        }
+      ],
+      "source": "Atrophy patterns of gray matter volume and the correlation with the disease duration in the cerebellum and hippocampal subregions in mesial temporal lobe epilepsy.",
+      "source_url": "https://pubmed.ncbi.nlm.nih.gov/41075529/",
+      "level": 2,
+      "category": "freesurfer",
+      "brain_regions": [
+        "海马",
+        "小脑"
+      ]
+    },
+    {
+      "id": "SP_颞叶_099",
+      "disease": "颞叶癫痫",
+      "query": "青少年转换性障碍伴癫痫发作患者在急性期与持续期之间是否存在海马亚区体积的差异？",
+      "reference_tools": [
+        {
+          "tool": "freesurfer_analysis",
+          "type": "recon-all",
+          "params": {}
+        },
+        {
+          "tool": "freesurfer_analysis",
+          "type": "hippocampal_subfields",
+          "params": {}
+        },
+        {
+          "tool": "roi_extraction",
+          "type": "volume",
+          "params": {}
+        },
+        {
+          "tool": "python_stats",
+          "type": "anova",
+          "params": {}
+        }
+      ],
+      "source": "Neuroimaging evidence of structural and network disruptions in adolescents with conversion disorder with seizures.",
+      "source_url": "https://pubmed.ncbi.nlm.nih.gov/41015833/",
+      "level": 2,
+      "category": "freesurfer",
+      "brain_regions": [
+        "海马",
+        "海马亚区"
+      ]
+    },
+    {
+      "id": "SP_颞叶_100",
+      "disease": "颞叶癫痫",
+      "query": "转换性障碍伴癫痫发作青少年的静息态功能网络局部一致性（ReHo）是否发生改变？",
+      "reference_tools": [
+        {
+          "tool": "dpabi_analysis",
+          "type": "reho",
+          "params": {}
+        },
+        {
+          "tool": "spm_analysis",
+          "type": "dartel_normalize",
+          "params": {}
+        },
+        {
+          "tool": "dpabi_analysis",
+          "type": "fc",
+          "params": {}
+        },
+        {
+          "tool": "python_stats",
+          "type": "ttest",
+          "params": {}
+        }
+      ],
+      "source": "Neuroimaging evidence of structural and network disruptions in adolescents with conversion disorder with seizures.",
+      "source_url": "https://pubmed.ncbi.nlm.nih.gov/41015833/",
+      "level": 2,
+      "category": "multi",
+      "brain_regions": [
+        "全脑",
+        "默认模式网络",
+        "前额叶"
+      ]
+    }
+  ],
+  "metadata": {
+    "total_count": 100,
+    "by_category": {
+      "freesurfer": 46,
+      "spm_vbm": 23,
+      "dpabi": 8,
+      "fsl_dti": 15,
+      "multi": 8
+    },
+    "by_level": {
+      "2": 97,
+      "1": 3
+    },
+    "by_disease": {
+      "帕金森病": 18,
+      "阿尔茨海默病": 18,
+      "精神分裂症": 18,
+      "重度抑郁症": 18,
+      "多发性硬化症": 18,
+      "颞叶癫痫": 10
+    }
+  }
+}

@@ -1,0 +1,190 @@
+{
+  "tool_name": "dsi_studio_analysis",
+  "description": "DSI Studio 扩散成像分析工具",
+  "version": "2.0",
+  "operations": {
+    "src": {
+      "description": "创建DSI Studio源文件",
+      "required_input_fields": ["source"],
+      "optional_input_fields": ["output", "b_table"],
+      "expected_output_fields": ["src_files"],
+      "expected_output_files": [
+        {"pattern": "*.sz", "description": "DSI Studio源文件(新格式)", "required": false},
+        {"pattern": "*.src.gz", "description": "DSI Studio源文件(旧格式)", "required": false}
+      ],
+      "quality_checks": [
+        {"check": "file_readable", "description": "源文件已生成"},
+        {"check": "bvec_bval_match", "description": "b_table与DWI体积数匹配"},
+        {"check": "value_positive", "field": "dwi_volume_count", "description": "DWI体积数为正"}
+      ],
+      "acceptance_criteria": {
+        "description": "DSI Studio源文件合格判定标准",
+        "pass_conditions": [
+          {"check": "bvec_bval_match", "severity": "error"},
+          {"field": "n_bval_shells", "range": [1, 999], "severity": "error"}
+        ],
+        "fail_conditions": [
+          {"check": "bvec_bval_mismatch", "severity": "error", "message": "bvec/bval与DWI体积数不匹配"}
+        ],
+        "warning_conditions": []
+      }
+    },
+    "rec": {
+      "description": "GQI/QSDR重建",
+      "references": ["Yeh et al. (2010) Generalized q-sampling imaging, IEEE TMI 29:1626-1635"],
+      "required_input_fields": ["source"],
+      "optional_input_fields": ["method", "param0", "thread_count"],
+      "expected_output_fields": ["fib_files"],
+      "expected_output_files": [
+        {"pattern": "*.fz", "description": "纤维方向文件(新格式)", "required": false},
+        {"pattern": "*.fib.gz", "description": "纤维方向文件(旧格式)", "required": false},
+        {"pattern": "*qa*.nii.gz", "description": "QA图", "required": false},
+        {"pattern": "*iso*.nii.gz", "description": "ISO图", "required": false},
+        {"pattern": "*rdi*.nii.gz", "description": "RDI图", "required": false}
+      ],
+      "quality_checks": [
+        {"check": "file_readable", "description": "重建文件已生成"},
+        {"check": "value_range", "field": "r_squared", "params": {"min": 0.8, "max": 1.0}, "description": "拟合R²>0.8"}
+      ],
+      "reference_parameters": {
+        "method_4": "GQI (本地空间)",
+        "method_7": "QSDR (MNI空间，群组分析推荐)",
+        "param0": 1.25,
+        "param0_note": "扩散采样长度比，1.25为推荐默认值"
+      },
+      "acceptance_criteria": {
+        "description": "GQI/QSDR重建合格判定标准",
+        "pass_conditions": [
+          {"field": "r_squared", "range": [0.8, 1.0], "severity": "error"}
+        ],
+        "fail_conditions": [
+          {"field": "r_squared", "threshold": 0.5, "operator": "<", "severity": "error", "message": "R²<0.5，拟合质量差"}
+        ],
+        "warning_conditions": [
+          {"field": "r_squared", "threshold": 0.8, "operator": "<", "severity": "warning", "message": "R² 0.5-0.8，拟合质量偏低"}
+        ]
+      }
+    },
+    "exp": {
+      "description": "导出FA/MD等NIfTI图像",
+      "required_input_fields": ["source"],
+      "optional_input_fields": ["export"],
+      "expected_output_fields": ["exported_files"],
+      "expected_output_files": [
+        {"pattern": "*fa*.nii.gz", "description": "FA图", "required": true},
+        {"pattern": "*md*.nii.gz", "description": "MD图", "required": false},
+        {"pattern": "*ad*.nii.gz", "description": "AD图", "required": false},
+        {"pattern": "*rd*.nii.gz", "description": "RD图", "required": false},
+        {"pattern": "*qa*.nii.gz", "description": "QA图", "required": false}
+      ],
+      "quality_checks": [
+        {"check": "value_range", "field": "FA", "params": {"min": 0, "max": 1}, "description": "FA值在[0,1]范围"},
+        {"check": "value_positive", "field": "MD", "description": "MD值为正"}
+      ],
+      "acceptance_criteria": {
+        "description": "导出NIfTI合格判定标准",
+        "pass_conditions": [
+          {"field": "FA", "range": [0, 1], "severity": "error"}
+        ],
+        "fail_conditions": [],
+        "warning_conditions": []
+      }
+    },
+    "trk": {
+      "description": "纤维追踪",
+      "references": ["Yeh et al. (2013) Deterministic diffusion fiber tracking improved by quantitative anisotropy, PLoS ONE 8:e80713"],
+      "required_input_fields": ["source"],
+      "optional_input_fields": ["fiber_count", "fa_threshold", "turning_angle", "seed", "roi", "roa", "end"],
+      "expected_output_fields": ["tract_files", "streamline_count"],
+      "expected_output_files": [
+        {"pattern": "*.tt.gz", "description": "纤维束文件", "required": true},
+        {"pattern": "*connectivity*.mat", "description": "连接矩阵", "required": false},
+        {"pattern": "*connectivity*.txt", "description": "连接矩阵(文本)", "required": false}
+      ],
+      "quality_checks": [
+        {"check": "file_readable", "description": "追踪文件已生成"},
+        {"check": "value_range", "field": "mean_tract_length_mm", "params": {"min": 20, "max": 200}, "description": "平均纤维长度在20-200mm范围"},
+        {"check": "value_range", "field": "streamline_count", "params": {"min": 1000}, "description": "纤维条数>1000"},
+        {"check": "anatomical_plausibility", "description": "纤维束解剖合理性 (建议手动检查)"}
+      ],
+      "reference_parameters": {
+        "fiber_count": 100000,
+        "fa_threshold": 0.15,
+        "turning_angle": 55,
+        "step_size": 1.0,
+        "min_length": 20,
+        "max_length": 300
+      },
+      "acceptance_criteria": {
+        "description": "纤维追踪合格判定标准",
+        "pass_conditions": [
+          {"field": "streamline_count", "range": [1000, 9999999], "severity": "error"},
+          {"field": "mean_tract_length_mm", "range": [20, 200], "severity": "error"}
+        ],
+        "fail_conditions": [
+          {"field": "streamline_count", "threshold": 100, "operator": "<", "severity": "error", "message": "纤维条数<100，追踪可能失败"}
+        ],
+        "warning_conditions": [
+          {"field": "streamline_count", "threshold": 1000, "operator": "<", "severity": "warning", "message": "纤维条数100-1000，偏少"}
+        ]
+      }
+    },
+    "ana": {
+      "description": "连接组分析",
+      "references": ["Yeh et al. (2016) Connectometry, NeuroImage 125:162-171"],
+      "required_input_fields": ["source", "atlas"],
+      "optional_input_fields": ["connectivity_type", "connectivity_threshold"],
+      "expected_output_fields": ["connectivity_matrix", "network_measures"],
+      "expected_output_files": [
+        {"pattern": "*connectivity*.mat", "description": "连接矩阵", "required": true},
+        {"pattern": "*network*.txt", "description": "网络指标", "required": false}
+      ],
+      "quality_checks": [
+        {"check": "file_readable", "description": "连接矩阵可读"},
+        {"check": "table_not_empty", "description": "连接矩阵非空"}
+      ],
+      "reference_parameters": {
+        "connectivity_type": "count",
+        "connectivity_type_options": ["count", "ncount", "mean_length", "trk_volume", "mean_qa"]
+      },
+      "acceptance_criteria": {
+        "description": "连接组分析合格判定标准",
+        "pass_conditions": [
+          {"check": "table_not_empty", "severity": "error"},
+          {"check": "required_files_exist", "files": ["*connectivity*.mat"], "severity": "error"}
+        ],
+        "fail_conditions": [
+          {"check": "matrix_empty", "severity": "error", "message": "连接矩阵为空"}
+        ],
+        "warning_conditions": []
+      }
+    },
+    "atk": {
+      "description": "自动纤维追踪 (AutoTrack)",
+      "references": ["Yeh et al. (2018) Population-averaged atlas of the macroscale human structural connectome, NeuroImage 178:57-68"],
+      "required_input_fields": ["source", "tract_name"],
+      "optional_input_fields": ["tolerance", "track_id"],
+      "expected_output_fields": ["tract_files"],
+      "expected_output_files": [
+        {"pattern": "*.tt.gz", "description": "自动追踪纤维束", "required": true}
+      ],
+      "quality_checks": [
+        {"check": "file_readable", "description": "追踪文件已生成"},
+        {"check": "value_range", "field": "streamline_count", "params": {"min": 100}, "description": "纤维条数>100"}
+      ],
+      "reference_parameters": {
+        "tolerance_mm": 16,
+        "atlas": "HCP1065",
+        "note": "基于HCP 1065被试群体平均atlas"
+      },
+      "acceptance_criteria": {
+        "description": "自动纤维追踪合格判定标准",
+        "pass_conditions": [
+          {"field": "streamline_count", "range": [100, 9999999], "severity": "error"}
+        ],
+        "fail_conditions": [],
+        "warning_conditions": []
+      }
+    }
+  }
+}

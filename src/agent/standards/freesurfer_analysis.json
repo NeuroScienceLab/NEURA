@@ -1,0 +1,188 @@
+{
+  "tool_name": "freesurfer_analysis",
+  "description": "FreeSurfer 皮层重建与分析工具",
+  "version": "2.0",
+  "operations": {
+    "recon-all": {
+      "description": "完整皮层重建",
+      "references": [
+        "Fischl (2012) FreeSurfer, NeuroImage 62:774-781",
+        "Rosen et al. (2018) Quantitative assessment of structural image quality, NeuroImage 169:407-418"
+      ],
+      "required_input_fields": ["input_files"],
+      "optional_input_fields": ["subjects_dir", "directive", "parallel"],
+      "expected_output_fields": ["subjects_dir", "processed_subjects"],
+      "expected_output_files": [
+        {"pattern": "*/mri/brain.mgz", "description": "脑提取结果", "required": true},
+        {"pattern": "*/mri/T1.mgz", "description": "标准化T1", "required": true},
+        {"pattern": "*/mri/aparc+aseg.mgz", "description": "皮层+皮下分割", "required": true},
+        {"pattern": "*/mri/wm.mgz", "description": "白质分割", "required": true},
+        {"pattern": "*/surf/lh.pial", "description": "左半球pial面", "required": true},
+        {"pattern": "*/surf/rh.pial", "description": "右半球pial面", "required": true},
+        {"pattern": "*/surf/lh.white", "description": "左半球白质面", "required": true},
+        {"pattern": "*/surf/rh.white", "description": "右半球白质面", "required": true},
+        {"pattern": "*/surf/lh.thickness", "description": "左半球皮层厚度", "required": true},
+        {"pattern": "*/surf/rh.thickness", "description": "右半球皮层厚度", "required": true},
+        {"pattern": "*/label/lh.aparc.annot", "description": "左半球Desikan分区", "required": true},
+        {"pattern": "*/label/rh.aparc.annot", "description": "右半球Desikan分区", "required": true},
+        {"pattern": "*/stats/aseg.stats", "description": "皮下结构统计", "required": true},
+        {"pattern": "*/stats/lh.aparc.stats", "description": "左半球皮层统计", "required": true},
+        {"pattern": "*/stats/rh.aparc.stats", "description": "右半球皮层统计", "required": true}
+      ],
+      "quality_checks": [
+        {"check": "file_readable", "description": "关键输出文件可读"},
+        {"check": "value_range", "field": "euler_number", "params": {"min": -100, "max": 100}, "description": "Euler number |χ|<100 (Rosen et al., 2018)"},
+        {"check": "value_range", "field": "cortical_thickness_mean", "params": {"min": 1.0, "max": 4.0}, "description": "平均皮层厚度在1-4mm范围"},
+        {"check": "value_range", "field": "surface_holes", "params": {"max": 50}, "description": "表面拓扑缺陷<50"}
+      ],
+      "reference_parameters": {
+        "directive": "-all",
+        "parallel_note": "-parallel -openmp N 可加速",
+        "runtime_note": "单被试约6-12小时"
+      },
+      "acceptance_criteria": {
+        "description": "皮层重建输出合格判定标准",
+        "pass_conditions": [
+          {"field": "euler_number", "range": [-100, 100], "severity": "error", "reference": "Rosen et al. (2018)"},
+          {"field": "cortical_thickness_mean", "range": [1.0, 4.0], "severity": "error"},
+          {"check": "required_files_exist", "files": ["mri/brain.mgz", "mri/aparc+aseg.mgz", "surf/lh.white", "surf/rh.white"], "severity": "error"}
+        ],
+        "fail_conditions": [
+          {"field": "euler_number_abs", "threshold": 200, "operator": ">", "severity": "error", "action": "flag_quality_failure", "message": "Euler number |χ|>200，严重质量问题"},
+          {"check": "required_files_missing", "files": ["mri/brain.mgz", "mri/aparc+aseg.mgz"], "severity": "error"}
+        ],
+        "warning_conditions": [
+          {"field": "euler_number_abs", "threshold": 100, "operator": ">", "severity": "warning", "message": "Euler number |χ| 100-200，建议检查表面重建质量"}
+        ]
+      }
+    },
+    "asegstats2table": {
+      "description": "提取皮下结构体积",
+      "required_input_fields": ["subjects_dir", "subjects_list"],
+      "optional_input_fields": ["meas", "tablefile", "delimiter"],
+      "expected_output_fields": ["stats_table"],
+      "expected_output_files": [
+        {"pattern": "*.txt", "description": "统计表格", "required": true}
+      ],
+      "quality_checks": [
+        {"check": "table_not_empty", "description": "表格非空"},
+        {"check": "value_positive", "field": "column_count", "description": "列数合理"},
+        {"check": "value_range", "field": "volume_range", "params": {"min": 0}, "description": "体积值非负"}
+      ],
+      "reference_parameters": {
+        "meas": "volume",
+        "delimiter": "tab"
+      },
+      "acceptance_criteria": {
+        "description": "皮下结构体积提取合格判定标准",
+        "pass_conditions": [
+          {"check": "table_not_empty", "severity": "error"},
+          {"field": "column_count", "range": [5, 9999], "severity": "error"},
+          {"field": "volume_min", "range": [0, 9999999], "severity": "error"}
+        ],
+        "fail_conditions": [
+          {"check": "table_empty", "severity": "error", "message": "输出表格为空"}
+        ],
+        "warning_conditions": []
+      }
+    },
+    "aparcstats2table": {
+      "description": "提取皮层厚度/表面积",
+      "required_input_fields": ["subjects_dir", "subjects_list", "hemi"],
+      "optional_input_fields": ["meas", "parc", "tablefile"],
+      "expected_output_fields": ["stats_table"],
+      "expected_output_files": [
+        {"pattern": "*.txt", "description": "统计表格", "required": true}
+      ],
+      "quality_checks": [
+        {"check": "table_not_empty", "description": "表格非空"},
+        {"check": "value_range", "field": "thickness_mean", "params": {"min": 1.0, "max": 4.0}, "description": "皮层厚度在1-4mm范围"},
+        {"check": "value_positive", "field": "area", "description": "表面积为正"}
+      ],
+      "reference_parameters": {
+        "meas_options": ["thickness", "area", "volume", "meancurv"],
+        "parc_options": ["aparc", "aparc.a2009s", "aparc.DKTatlas"],
+        "hemi_options": ["lh", "rh"]
+      },
+      "acceptance_criteria": {
+        "description": "皮层统计提取合格判定标准",
+        "pass_conditions": [
+          {"field": "thickness_mean", "range": [1.0, 4.0], "severity": "error"},
+          {"field": "area", "range": [0, 9999999], "severity": "error"}
+        ],
+        "fail_conditions": [
+          {"field": "thickness_mean", "range_outside": [1.0, 4.0], "severity": "error", "message": "皮层厚度超出合理范围"}
+        ],
+        "warning_conditions": []
+      }
+    },
+    "mris_anatomical_stats": {
+      "description": "皮层形态学统计",
+      "references": ["Fischl & Dale (2000) Measuring the thickness of the human cerebral cortex, PNAS 97:11050-11055"],
+      "required_input_fields": ["subjects_dir", "subject_id", "hemi"],
+      "optional_input_fields": ["annotation", "label"],
+      "expected_output_fields": ["stats_output"],
+      "expected_output_files": [
+        {"pattern": "*/stats/*.stats", "description": "形态学统计文件", "required": true}
+      ],
+      "quality_checks": [
+        {"check": "file_readable", "description": "统计文件可读"},
+        {"check": "value_range", "field": "mean_thickness", "params": {"min": 1.0, "max": 4.0}, "description": "平均厚度在1-4mm范围"}
+      ],
+      "acceptance_criteria": {
+        "description": "皮层形态学统计合格判定标准",
+        "pass_conditions": [
+          {"field": "mean_thickness", "range": [1.0, 4.0], "severity": "error"}
+        ],
+        "fail_conditions": [],
+        "warning_conditions": []
+      }
+    },
+    "mri_segstats": {
+      "description": "分割统计",
+      "required_input_fields": ["segmentation_file"],
+      "optional_input_fields": ["in_file", "ctab", "excludeid", "summary_file"],
+      "expected_output_fields": ["stats_table"],
+      "expected_output_files": [
+        {"pattern": "*.stats", "description": "分割统计文件", "required": true}
+      ],
+      "quality_checks": [
+        {"check": "table_not_empty", "description": "统计表非空"},
+        {"check": "value_positive", "field": "volume", "description": "体积值为正"}
+      ],
+      "acceptance_criteria": {
+        "description": "分割统计合格判定标准",
+        "pass_conditions": [
+          {"check": "table_not_empty", "severity": "error"},
+          {"field": "volume", "range": [0, 9999999], "severity": "error"}
+        ],
+        "fail_conditions": [],
+        "warning_conditions": []
+      }
+    },
+    "mri_vol2surf": {
+      "description": "体积到表面投影",
+      "required_input_fields": ["volume_file", "subject_id", "hemi"],
+      "optional_input_fields": ["regheader", "projfrac", "interp"],
+      "expected_output_fields": ["surface_file"],
+      "expected_output_files": [
+        {"pattern": "*.mgh", "description": "表面投影结果", "required": true}
+      ],
+      "quality_checks": [
+        {"check": "file_readable", "description": "投影结果可读"}
+      ],
+      "reference_parameters": {
+        "projfrac": 0.5,
+        "interp": "trilinear"
+      },
+      "acceptance_criteria": {
+        "description": "体积到表面投影合格判定标准",
+        "pass_conditions": [
+          {"check": "output_file_exists", "pattern": "*.mgh", "severity": "error"}
+        ],
+        "fail_conditions": [],
+        "warning_conditions": []
+      }
+    }
+  }
+}

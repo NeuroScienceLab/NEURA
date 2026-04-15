@@ -1,0 +1,129 @@
+{
+  "tool_name": "data_visualization",
+  "description": "数据可视化工具",
+  "version": "2.0",
+  "operations": {
+    "brain_map": {
+      "description": "脑区统计图",
+      "required_input_fields": ["data", "atlas"],
+      "optional_input_fields": ["colormap", "threshold", "coordinate_system", "dpi", "views"],
+      "expected_output_fields": ["figure_path"],
+      "expected_output_files": [
+        {"pattern": "*.png", "description": "脑图可视化", "required": true}
+      ],
+      "quality_checks": [
+        {"check": "file_size_min", "params": {"min_bytes": 1024}, "description": "图像文件大小>1KB"},
+        {"check": "value_range", "field": "dpi", "params": {"min": 150}, "description": "DPI>=150 (出版质量)"},
+        {"check": "colormap_specified", "description": "颜色映射已指定 (建议手动检查)"},
+        {"check": "threshold_valid", "description": "阈值设置合理 (建议手动检查)"}
+      ],
+      "reference_parameters": {
+        "coordinate_system_options": ["MNI", "native"],
+        "dpi": 300,
+        "colormap_options": ["hot", "cold_hot", "RdBu_r", "viridis"],
+        "views": ["axial", "coronal", "sagittal"],
+        "threshold_note": "统计图建议使用对应的统计阈值"
+      },
+      "acceptance_criteria": {
+        "description": "脑区统计图合格判定标准",
+        "pass_conditions": [
+          {"check": "file_size_min", "min_bytes": 1024, "severity": "error"},
+          {"field": "dpi", "range": [150, 9999], "severity": "error"}
+        ],
+        "fail_conditions": [
+          {"check": "file_empty", "severity": "error", "message": "图像文件为空"}
+        ],
+        "warning_conditions": []
+      }
+    },
+    "statistical_plot": {
+      "description": "统计图表",
+      "required_input_fields": ["data"],
+      "optional_input_fields": ["plot_type", "groups", "labels", "dpi"],
+      "expected_output_fields": ["figure_path"],
+      "expected_output_files": [
+        {"pattern": "*.png", "description": "统计图表", "required": true}
+      ],
+      "quality_checks": [
+        {"check": "file_size_min", "params": {"min_bytes": 1024}, "description": "图像文件大小>1KB"},
+        {"check": "axis_labels_present", "description": "坐标轴标签已设置 (建议手动检查)"},
+        {"check": "legend_present", "description": "图例已设置 (建议手动检查)"},
+        {"check": "statistical_annotations", "description": "统计标注已添加 (建议手动检查)"}
+      ],
+      "reference_parameters": {
+        "plot_types": ["boxplot", "violin", "bar", "scatter", "heatmap", "forest_plot"],
+        "dpi": 300,
+        "style_note": "推荐使用seaborn或matplotlib的publication风格"
+      },
+      "acceptance_criteria": {
+        "description": "统计图表合格判定标准",
+        "pass_conditions": [
+          {"check": "file_size_min", "min_bytes": 1024, "severity": "error"}
+        ],
+        "fail_conditions": [
+          {"check": "file_empty", "severity": "error", "message": "图像文件为空"}
+        ],
+        "warning_conditions": []
+      }
+    },
+    "qc_montage": {
+      "description": "QC蒙太奇图 (多切面展示)",
+      "required_input_fields": ["image_files"],
+      "optional_input_fields": ["overlay", "n_slices", "orientation", "dpi"],
+      "expected_output_fields": ["figure_path"],
+      "expected_output_files": [
+        {"pattern": "*qc*.png", "description": "QC蒙太奇图", "required": true}
+      ],
+      "quality_checks": [
+        {"check": "file_size_min", "params": {"min_bytes": 2048}, "description": "图像文件大小>2KB"},
+        {"check": "value_range", "field": "n_slices", "params": {"min": 5, "max": 30}, "description": "切面数在5-30范围"}
+      ],
+      "reference_parameters": {
+        "n_slices": 9,
+        "orientation_options": ["axial", "coronal", "sagittal", "all"],
+        "overlay_note": "可叠加分割结果、配准轮廓等用于质量检查",
+        "dpi": 150
+      },
+      "acceptance_criteria": {
+        "description": "QC蒙太奇图合格判定标准",
+        "pass_conditions": [
+          {"check": "file_size_min", "min_bytes": 2048, "severity": "error"},
+          {"field": "n_slices", "range": [5, 30], "severity": "error"}
+        ],
+        "fail_conditions": [
+          {"check": "file_empty", "severity": "error", "message": "图像文件为空"}
+        ],
+        "warning_conditions": []
+      }
+    },
+    "motion_plot": {
+      "description": "运动参数时间序列图",
+      "references": ["Power et al. (2012) Spurious but systematic correlations in fMRI, NeuroImage 59:2142-2154"],
+      "required_input_fields": ["motion_params_file"],
+      "optional_input_fields": ["fd_threshold", "dpi"],
+      "expected_output_fields": ["figure_path", "fd_values"],
+      "expected_output_files": [
+        {"pattern": "*motion*.png", "description": "运动参数图", "required": true}
+      ],
+      "quality_checks": [
+        {"check": "file_size_min", "params": {"min_bytes": 1024}, "description": "图像文件大小>1KB"}
+      ],
+      "reference_parameters": {
+        "fd_threshold_line": 0.5,
+        "fd_threshold_note": "FD=0.5mm红线标注 (Power et al., 2012)",
+        "params_note": "6参数: 3平移(mm) + 3旋转(rad)",
+        "dpi": 150
+      },
+      "acceptance_criteria": {
+        "description": "运动参数图合格判定标准",
+        "pass_conditions": [
+          {"check": "file_size_min", "min_bytes": 1024, "severity": "error"}
+        ],
+        "fail_conditions": [
+          {"check": "file_empty", "severity": "error", "message": "图像文件为空"}
+        ],
+        "warning_conditions": []
+      }
+    }
+  }
+}

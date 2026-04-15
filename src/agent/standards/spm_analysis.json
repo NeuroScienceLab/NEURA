@@ -1,0 +1,374 @@
+{
+  "tool_name": "spm_analysis",
+  "description": "SPM12 神经影像分析工具",
+  "version": "2.0",
+  "operations": {
+    "vbm_segment": {
+      "description": "VBM组织分割 (Unified Segmentation)",
+      "references": ["Ashburner & Friston (2005) Unified segmentation, NeuroImage 26:839-851"],
+      "required_input_fields": ["input_files"],
+      "optional_input_fields": ["tpm", "bias_regularisation", "sampling_distance", "warping_regularisation"],
+      "expected_output_fields": ["segmented_files", "deformation_fields", "bias_corrected"],
+      "expected_output_files": [
+        {"pattern": "c1*.nii", "description": "灰质概率图", "required": true},
+        {"pattern": "c2*.nii", "description": "白质概率图", "required": true},
+        {"pattern": "c3*.nii", "description": "脑脊液概率图", "required": false},
+        {"pattern": "c4*.nii", "description": "骨骼概率图", "required": false},
+        {"pattern": "c5*.nii", "description": "软组织概率图", "required": false},
+        {"pattern": "y_*.nii", "description": "前向形变场", "required": true},
+        {"pattern": "iy_*.nii", "description": "逆向形变场", "required": false},
+        {"pattern": "BiasField_*.nii", "description": "偏置场", "required": false},
+        {"pattern": "m*.nii", "description": "偏置校正图像", "required": false},
+        {"pattern": "mwc1*.nii", "description": "调制标准化灰质", "required": false},
+        {"pattern": "mwc2*.nii", "description": "调制标准化白质", "required": false},
+        {"pattern": "wc1*.nii", "description": "标准化灰质", "required": false},
+        {"pattern": "wc2*.nii", "description": "标准化白质", "required": false}
+      ],
+      "quality_checks": [
+        {"check": "file_readable", "description": "NIfTI文件可被nibabel读取"},
+        {"check": "value_range", "field": "tissue_probability", "params": {"min": 0, "max": 1}, "description": "组织概率值在[0,1]范围内"},
+        {"check": "tissue_probability_sum", "description": "各组织概率之和接近1 (建议手动检查)"},
+        {"check": "value_range", "field": "gm_volume_ml", "params": {"min": 400, "max": 900}, "description": "灰质体积在400-900mL范围 (Good et al., 2001)"},
+        {"check": "value_range", "field": "wm_volume_ml", "params": {"min": 300, "max": 700}, "description": "白质体积在300-700mL范围"}
+      ],
+      "reference_parameters": {
+        "tpm": "TPM.nii (SPM12自带)",
+        "bias_regularisation": 0.001,
+        "bias_fwhm": 60,
+        "sampling_distance": 3,
+        "warping_regularisation": [0, 0.001, 0.5, 0.05, 0.2],
+        "cleanup": 1,
+        "note": "Warping regularisation控制形变场平滑度"
+      },
+      "acceptance_criteria": {
+        "description": "VBM分割输出合格判定标准",
+        "pass_conditions": [
+          {"field": "gm_volume_ml", "range": [400, 900], "severity": "error", "reference": "Good et al. (2001)"},
+          {"field": "wm_volume_ml", "range": [300, 700], "severity": "error"},
+          {"field": "tissue_probability", "range": [0, 1], "severity": "error"}
+        ],
+        "fail_conditions": [
+          {"field": "gm_volume_ml", "range_outside": [400, 900], "severity": "error", "action": "flag_segmentation_failure"},
+          {"field": "wm_volume_ml", "range_outside": [300, 700], "severity": "error", "action": "flag_segmentation_failure"},
+          {"check": "required_files_missing", "files": ["c1*.nii", "c2*.nii", "y_*.nii"], "severity": "error"}
+        ],
+        "warning_conditions": [
+          {"field": "tiv_ml", "range_outside": [1000, 1800], "severity": "warning", "message": "TIV超出正常范围，建议检查分割质量"}
+        ]
+      }
+    },
+    "normalize": {
+      "description": "空间标准化到MNI空间",
+      "references": ["Ashburner & Friston (2005) Unified segmentation, NeuroImage 26:839-851"],
+      "required_input_fields": ["input_files", "deformation_fields"],
+      "optional_input_fields": ["voxel_sizes", "bounding_box", "interpolation"],
+      "expected_output_fields": ["normalized_files"],
+      "expected_output_files": [
+        {"pattern": "w*.nii", "description": "标准化后的图像", "required": true}
+      ],
+      "quality_checks": [
+        {"check": "file_readable", "description": "NIfTI文件可读"},
+        {"check": "cross_correlation_with_template", "params": {"min_cc": 0.7}, "description": "与MNI模板互相关>0.7 (建议手动检查)"},
+        {"check": "dimensions_preserved", "description": "输出维度符合MNI标准"}
+      ],
+      "reference_parameters": {
+        "mni_dimensions": {
+          "1mm": {"dims": [182, 218, 182], "voxel_sizes": [1, 1, 1]},
+          "1.5mm": {"dims": [121, 145, 121], "voxel_sizes": [1.5, 1.5, 1.5]},
+          "2mm": {"dims": [91, 109, 91], "voxel_sizes": [2, 2, 2]}
+        },
+        "bounding_box": [[-78, -112, -70], [78, 76, 85]],
+        "interpolation": 4
+      },
+      "acceptance_criteria": {
+        "description": "空间标准化输出合格判定标准",
+        "pass_conditions": [
+          {"field": "output_dimensions", "expected": [91, 109, 91], "severity": "error", "note": "MNI 2mm标准"},
+          {"field": "voxel_sizes", "expected": [2, 2, 2], "severity": "error"}
+        ],
+        "fail_conditions": [
+          {"check": "required_files_missing", "files": ["w*.nii"], "severity": "error"}
+        ],
+        "warning_conditions": [
+          {"field": "cross_correlation_with_mni", "threshold": 0.7, "operator": "<", "severity": "warning", "message": "与MNI模板互相关偏低，建议检查配准质量"}
+        ]
+      }
+    },
+    "smooth": {
+      "description": "空间平滑 (Gaussian kernel)",
+      "references": ["Worsley et al. (1996) A unified statistical approach, Human Brain Mapping 4:58-73"],
+      "required_input_fields": ["input_files", "fwhm"],
+      "expected_output_fields": ["smoothed_files"],
+      "expected_output_files": [
+        {"pattern": "s*.nii", "description": "平滑后的图像", "required": true}
+      ],
+      "quality_checks": [
+        {"check": "file_readable", "description": "NIfTI文件可读"},
+        {"check": "fwhm_in_range", "params": {"min": 4, "max": 16}, "description": "FWHM在4-16mm范围"},
+        {"check": "fwhm_voxel_ratio", "description": "FWHM应为体素大小的2-3倍 (matched filter theorem, 建议手动检查)"}
+      ],
+      "reference_parameters": {
+        "vbm_fwhm": [8, 8, 8],
+        "vbm_fwhm_note": "VBM推荐8-12mm (Ashburner & Friston, 2000)",
+        "fmri_fwhm_note": "fMRI推荐2-3倍体素大小",
+        "fwhm_default": [6, 6, 6]
+      },
+      "acceptance_criteria": {
+        "description": "空间平滑输出合格判定标准",
+        "pass_conditions": [
+          {"field": "fwhm", "range": [4, 16], "severity": "error"},
+          {"check": "output_file_exists", "pattern": "s*.nii", "severity": "error"}
+        ],
+        "fail_conditions": [
+          {"field": "fwhm", "range_outside": [2, 20], "severity": "error", "message": "FWHM严重超出合理范围"}
+        ],
+        "warning_conditions": [
+          {"check": "fwhm_voxel_ratio", "expected_range": [2, 3], "severity": "warning", "message": "FWHM不是体素大小的2-3倍"}
+        ]
+      }
+    },
+    "realign": {
+      "description": "头动校正 (Realignment)",
+      "references": ["Power et al. (2012) Spurious but systematic correlations in fMRI, NeuroImage 59:2142-2154"],
+      "required_input_fields": ["input_files"],
+      "optional_input_fields": ["quality", "separation", "fwhm", "register_to_mean"],
+      "expected_output_fields": ["realigned_files", "motion_params", "mean_image"],
+      "expected_output_files": [
+        {"pattern": "r*.nii", "description": "校正后图像", "required": true},
+        {"pattern": "rp_*.txt", "description": "运动参数文件(6列)", "required": true},
+        {"pattern": "mean*.nii", "description": "平均图像", "required": true}
+      ],
+      "quality_checks": [
+        {"check": "file_readable", "description": "NIfTI文件可读"},
+        {"check": "motion_threshold", "params": {"max_mm": 3.0, "mean_rms_warn": 0.2}, "description": "最大运动<3mm, 平均FD<0.2mm理想"},
+        {"check": "outlier_ratio", "params": {"max_ratio": 0.2}, "description": "FD>0.5mm帧数<20% (Power et al., 2012)"}
+      ],
+      "reference_parameters": {
+        "quality": 0.9,
+        "separation": 4,
+        "fwhm": 5,
+        "register_to_mean": true,
+        "fd_thresholds": {
+          "ideal": 0.2,
+          "acceptable": 0.5,
+          "exclude": 0.5,
+          "reference": "Power et al. (2012)"
+        },
+        "dvars_threshold": 1.5
+      },
+      "acceptance_criteria": {
+        "description": "头动校正输出合格判定标准",
+        "pass_conditions": [
+          {"field": "fd_mean", "range": [0, 0.2], "severity": "info", "note": "理想头动范围"},
+          {"field": "max_displacement_mm", "range": [0, 3], "severity": "error"},
+          {"field": "fd_above_05_ratio", "range": [0, 0.2], "severity": "error", "note": "FD>0.5mm帧<20%"}
+        ],
+        "fail_conditions": [
+          {"field": "fd_mean", "threshold": 0.5, "operator": ">", "severity": "error", "action": "exclude_subject"}
+        ],
+        "warning_conditions": [
+          {"field": "fd_mean", "threshold": 0.2, "operator": ">", "severity": "warning", "message": "头动偏大(FD>0.2mm)，建议检查"}
+        ]
+      }
+    },
+    "slice_timing": {
+      "description": "层时间校正",
+      "required_input_fields": ["input_files", "tr", "num_slices"],
+      "optional_input_fields": ["slice_order", "reference_slice"],
+      "expected_output_fields": ["corrected_files"],
+      "expected_output_files": [
+        {"pattern": "a*.nii", "description": "层时间校正后图像", "required": true}
+      ],
+      "quality_checks": [
+        {"check": "file_readable", "description": "NIfTI文件可读"},
+        {"check": "value_range", "field": "tr", "params": {"min": 0.3, "max": 5.0}, "description": "TR在0.3-5.0s范围"},
+        {"check": "dimensions_preserved", "description": "校正后维度与输入一致"}
+      ],
+      "reference_parameters": {
+        "multiband_note": "多频带采集(TR<1s)时层时间校正效果有限，可考虑跳过"
+      },
+      "acceptance_criteria": {
+        "description": "层时间校正输出合格判定标准",
+        "pass_conditions": [
+          {"field": "tr", "range": [0.3, 5.0], "severity": "error"},
+          {"check": "dimensions_preserved", "severity": "error"}
+        ],
+        "fail_conditions": [
+          {"field": "tr", "range_outside": [0.3, 5.0], "severity": "error", "message": "TR超出合理范围"}
+        ],
+        "warning_conditions": []
+      }
+    },
+    "coregister": {
+      "description": "功能像到结构像配准",
+      "references": ["Studholme et al. (1999) An overlap invariant entropy measure, Pattern Recognition 32:71-86"],
+      "required_input_fields": ["input_files", "reference_image"],
+      "optional_input_fields": ["cost_function", "separation", "tolerances"],
+      "expected_output_fields": ["coregistered_files", "transformation_matrix"],
+      "expected_output_files": [],
+      "quality_checks": [
+        {"check": "file_readable", "description": "NIfTI文件可读"},
+        {"check": "value_range", "field": "mutual_information", "params": {"min": 0.8}, "description": "NMI>0.8 (建议手动检查)"}
+      ],
+      "reference_parameters": {
+        "cost_function": "nmi",
+        "cost_function_options": ["nmi", "mi", "ecc", "ncc"],
+        "separation": [4, 2],
+        "tolerances": [0.02, 0.02, 0.02, 0.001, 0.001, 0.001, 0.01, 0.01, 0.01, 0.001, 0.001, 0.001]
+      },
+      "acceptance_criteria": {
+        "description": "配准输出合格判定标准",
+        "pass_conditions": [
+          {"field": "mutual_information", "range": [0.8, 2.0], "severity": "error"}
+        ],
+        "fail_conditions": [],
+        "warning_conditions": [
+          {"field": "mutual_information", "threshold": 0.8, "operator": "<", "severity": "warning", "message": "NMI偏低(0.6-0.8)，建议目视检查配准质量"}
+        ]
+      }
+    },
+    "dartel": {
+      "description": "DARTEL 非线性配准",
+      "references": ["Ashburner (2007) A fast diffeomorphic image registration algorithm, NeuroImage 38:95-113"],
+      "required_input_fields": ["rc1_files", "rc2_files"],
+      "optional_input_fields": ["template", "iterations"],
+      "expected_output_fields": ["flow_fields", "templates"],
+      "expected_output_files": [
+        {"pattern": "u_rc1*.nii", "description": "流场", "required": true},
+        {"pattern": "Template_*.nii", "description": "DARTEL模板(6次迭代)", "required": true}
+      ],
+      "quality_checks": [
+        {"check": "file_readable", "description": "流场文件可读"},
+        {"check": "value_range", "field": "template_count", "params": {"min": 6, "max": 6}, "description": "应生成6个迭代模板"}
+      ],
+      "reference_parameters": {
+        "iterations": 6,
+        "regularisation_form": "Linear Elastic Energy",
+        "inner_iterations": [3, 3, 3, 3, 3, 3],
+        "time_steps": [1, 1, 2, 4, 16, 64]
+      },
+      "acceptance_criteria": {
+        "description": "DARTEL配准输出合格判定标准",
+        "pass_conditions": [
+          {"field": "template_count", "expected": 6, "severity": "error"},
+          {"check": "output_file_exists", "pattern": "u_rc1*.nii", "severity": "error"}
+        ],
+        "fail_conditions": [
+          {"field": "template_count", "range_outside": [6, 6], "severity": "error", "message": "DARTEL模板数不等于6"}
+        ],
+        "warning_conditions": []
+      }
+    },
+    "cat12_segment": {
+      "description": "CAT12 高精度分割",
+      "references": ["Gaser et al. (2024) CAT: a computational anatomy toolbox for the analysis of structural MRI data, GigaScience 13:giae049"],
+      "required_input_fields": ["input_files"],
+      "optional_input_fields": ["atlas", "surface_processing"],
+      "expected_output_fields": ["segmented_files", "report", "iqr_score", "tiv"],
+      "expected_output_files": [
+        {"pattern": "mri/p0*.nii", "description": "标签图", "required": true},
+        {"pattern": "mri/mwp1*.nii", "description": "调制标准化灰质", "required": true},
+        {"pattern": "mri/mwp2*.nii", "description": "调制标准化白质", "required": true},
+        {"pattern": "report/cat_*.xml", "description": "CAT12质量报告", "required": true},
+        {"pattern": "label/catROI_*.xml", "description": "ROI体积", "required": false}
+      ],
+      "quality_checks": [
+        {"check": "value_range", "field": "iqr_score", "params": {"min": 70, "max": 100}, "description": "IQR质量评分>70%"},
+        {"check": "value_range", "field": "tiv_ml", "params": {"min": 1000, "max": 1800}, "description": "TIV在1000-1800mL范围"}
+      ],
+      "reference_parameters": {
+        "atlas": "neuromorphometrics",
+        "surface_processing": true,
+        "internal_resampling": 1.0
+      },
+      "acceptance_criteria": {
+        "description": "CAT12分割输出合格判定标准",
+        "pass_conditions": [
+          {"field": "iqr_score", "range": [70, 100], "severity": "error", "reference": "Gaser et al. (2024)"},
+          {"field": "tiv_ml", "range": [1000, 1800], "severity": "error"}
+        ],
+        "fail_conditions": [
+          {"field": "iqr_score", "threshold": 50, "operator": "<", "severity": "error", "action": "exclude_subject", "message": "IQR<50%，图像质量严重不足"}
+        ],
+        "warning_conditions": [
+          {"field": "iqr_score", "threshold": 70, "operator": "<", "severity": "warning", "message": "IQR在50-70%，图像质量偏低，建议检查"}
+        ]
+      }
+    },
+    "first_level": {
+      "description": "一阶GLM分析 (个体水平)",
+      "references": ["Friston et al. (1994) Statistical parametric maps in functional imaging, Human Brain Mapping 2:189-210"],
+      "required_input_fields": ["scans", "conditions", "tr"],
+      "optional_input_fields": ["hpf", "hrf_derivatives", "motion_regressors", "ar_model"],
+      "expected_output_fields": ["spm_mat", "beta_images", "contrast_images"],
+      "expected_output_files": [
+        {"pattern": "SPM.mat", "description": "SPM设计矩阵", "required": true},
+        {"pattern": "beta_*.nii", "description": "参数估计图", "required": true},
+        {"pattern": "con_*.nii", "description": "对比图", "required": true},
+        {"pattern": "spmT_*.nii", "description": "T统计图", "required": true},
+        {"pattern": "ResMS.nii", "description": "残差均方", "required": false},
+        {"pattern": "mask.nii", "description": "分析掩模", "required": false}
+      ],
+      "quality_checks": [
+        {"check": "file_readable", "description": "SPM.mat可读"},
+        {"check": "value_positive", "field": "design_matrix_rank", "description": "设计矩阵满秩"}
+      ],
+      "reference_parameters": {
+        "high_pass_filter": 128,
+        "hrf_derivatives": "none",
+        "ar_model": "AR(1)",
+        "microtime_resolution": 16,
+        "microtime_onset": 8
+      },
+      "acceptance_criteria": {
+        "description": "一阶GLM输出合格判定标准",
+        "pass_conditions": [
+          {"check": "required_files_exist", "files": ["SPM.mat", "beta_*.nii", "con_*.nii", "spmT_*.nii"], "severity": "error"},
+          {"field": "design_matrix_rank", "check": "full_rank", "severity": "error"}
+        ],
+        "fail_conditions": [
+          {"check": "required_files_missing", "files": ["SPM.mat"], "severity": "error", "message": "SPM.mat缺失，GLM估计失败"}
+        ],
+        "warning_conditions": []
+      }
+    },
+    "second_level": {
+      "description": "二阶GLM分析 (组水平)",
+      "references": [
+        "Woo et al. (2014) Cluster-extent based thresholding, NeuroImage 91:412-419",
+        "Eklund et al. (2016) Cluster failure, PNAS 113:7900-7905"
+      ],
+      "required_input_fields": ["contrast_images", "design_type"],
+      "optional_input_fields": ["covariates", "explicit_mask", "global_calculation"],
+      "expected_output_fields": ["spm_mat", "contrast_images", "thresholded_maps"],
+      "expected_output_files": [
+        {"pattern": "SPM.mat", "description": "SPM设计矩阵", "required": true},
+        {"pattern": "spmT_*.nii", "description": "T统计图", "required": true},
+        {"pattern": "spmF_*.nii", "description": "F统计图", "required": false}
+      ],
+      "quality_checks": [
+        {"check": "file_readable", "description": "SPM.mat可读"},
+        {"check": "sample_size_adequate", "params": {"min_per_group": 10}, "description": "每组至少10个被试"}
+      ],
+      "reference_parameters": {
+        "cluster_forming_threshold": 0.001,
+        "cluster_forming_note": "p<0.001 voxel-level threshold (Woo et al., 2014)",
+        "multiple_comparison": "FWE cluster-level correction",
+        "design_types": ["one_sample_t", "two_sample_t", "paired_t", "anova", "multiple_regression"]
+      },
+      "acceptance_criteria": {
+        "description": "二阶GLM输出合格判定标准",
+        "pass_conditions": [
+          {"field": "min_group_n", "range": [10, 9999], "severity": "error"},
+          {"field": "cluster_forming_p", "range": [0, 0.001], "severity": "error"}
+        ],
+        "fail_conditions": [
+          {"field": "min_group_n", "threshold": 5, "operator": "<", "severity": "error", "message": "每组<5被试，结果不可靠"}
+        ],
+        "warning_conditions": [
+          {"field": "min_group_n", "threshold": 10, "operator": "<", "severity": "warning", "message": "每组5-10被试，统计效能可能不足"}
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,213 @@
+{
+  "tool_name": "dpabi_analysis",
+  "description": "DPABI 静息态fMRI分析工具",
+  "version": "2.0",
+  "global_checks": {
+    "head_motion_exclusion": {
+      "description": "头动排除标准 (Power et al., 2012)",
+      "fd_exclude_threshold_mm": 0.5,
+      "fd_scrubbing_threshold_mm": 0.5,
+      "reference": "Power et al. (2012) NeuroImage 59:2142-2154"
+    }
+  },
+  "operations": {
+    "alff": {
+      "description": "低频振幅 (ALFF/fALFF)",
+      "references": ["Zang et al. (2007) Altered baseline brain activity in children with ADHD, Brain & Development 29:83-91"],
+      "required_input_fields": ["input_files", "tr"],
+      "optional_input_fields": ["band_pass", "mask"],
+      "expected_output_fields": ["alff_map", "falff_map", "malff_map", "zalff_map"],
+      "expected_output_files": [
+        {"pattern": "*ALFF*.nii*", "description": "ALFF图", "required": true},
+        {"pattern": "*fALFF*.nii*", "description": "fALFF图", "required": false},
+        {"pattern": "*mALFF*.nii*", "description": "平均标准化ALFF", "required": false},
+        {"pattern": "*zALFF*.nii*", "description": "Z标准化ALFF", "required": false}
+      ],
+      "quality_checks": [
+        {"check": "value_positive", "field": "ALFF", "description": "ALFF值为正"},
+        {"check": "value_range", "field": "frequency_band_low", "params": {"min": 0.005, "max": 0.02}, "description": "低频下限在0.005-0.02Hz"},
+        {"check": "value_range", "field": "frequency_band_high", "params": {"min": 0.06, "max": 0.1}, "description": "高频上限在0.06-0.1Hz"},
+        {"check": "motion_threshold", "params": {"max_mm": 0.5}, "description": "FD<0.5mm (Power et al., 2012)"}
+      ],
+      "reference_parameters": {
+        "band_pass": [0.01, 0.08],
+        "band_pass_note": "0.01-0.08Hz为经典频段 (Zang et al., 2007)",
+        "tr": "需从数据获取",
+        "normalization": "z-score within mask"
+      },
+      "acceptance_criteria": {
+        "description": "ALFF输出合格判定标准",
+        "pass_conditions": [
+          {"field": "ALFF", "range": [0, 9999], "severity": "error", "note": "ALFF值应为正"},
+          {"field": "frequency_band", "expected": [0.01, 0.08], "severity": "error"},
+          {"field": "fd_mean", "range": [0, 0.5], "severity": "error"}
+        ],
+        "fail_conditions": [
+          {"field": "ALFF_has_negative", "expected": false, "severity": "error", "message": "ALFF含负值"},
+          {"field": "fd_mean", "threshold": 0.5, "operator": ">", "severity": "error", "action": "exclude_subject"}
+        ],
+        "warning_conditions": []
+      }
+    },
+    "reho": {
+      "description": "局部一致性 (ReHo)",
+      "references": ["Zang et al. (2004) Regional homogeneity approach to fMRI data analysis, NeuroImage 22:394-400"],
+      "required_input_fields": ["input_files"],
+      "optional_input_fields": ["nvoxel", "mask"],
+      "expected_output_fields": ["reho_map", "zreho_map"],
+      "expected_output_files": [
+        {"pattern": "*ReHo*.nii*", "description": "ReHo图", "required": true},
+        {"pattern": "*zReHo*.nii*", "description": "Z标准化ReHo", "required": false}
+      ],
+      "quality_checks": [
+        {"check": "value_range", "field": "kcc", "params": {"min": 0, "max": 1}, "description": "KCC值在[0,1]范围"},
+        {"check": "motion_threshold", "params": {"max_mm": 0.5}, "description": "FD<0.5mm (Power et al., 2012)"}
+      ],
+      "reference_parameters": {
+        "nvoxel": 27,
+        "nvoxel_options": [7, 19, 27],
+        "nvoxel_note": "7=面邻接, 19=面+棱邻接, 27=面+棱+角邻接 (Zang et al., 2004)"
+      },
+      "acceptance_criteria": {
+        "description": "ReHo输出合格判定标准",
+        "pass_conditions": [
+          {"field": "kcc", "range": [0, 1], "severity": "error"},
+          {"field": "fd_mean", "range": [0, 0.5], "severity": "error"}
+        ],
+        "fail_conditions": [
+          {"field": "kcc", "range_outside": [0, 1], "severity": "error", "message": "KCC超出[0,1]范围"},
+          {"field": "fd_mean", "threshold": 0.5, "operator": ">", "severity": "error", "action": "exclude_subject"}
+        ],
+        "warning_conditions": []
+      }
+    },
+    "fc_seed": {
+      "description": "种子点功能连接",
+      "references": ["Biswal et al. (1995) Functional connectivity in the motor cortex of resting human brain, MRM 34:537-541"],
+      "required_input_fields": ["input_files", "seed_roi"],
+      "optional_input_fields": ["mask", "fisher_z"],
+      "expected_output_fields": ["fc_map", "zfc_map"],
+      "expected_output_files": [
+        {"pattern": "*FC*.nii*", "description": "功能连接图", "required": true},
+        {"pattern": "*zFC*.nii*", "description": "Fisher z变换后FC图", "required": false}
+      ],
+      "quality_checks": [
+        {"check": "value_range", "field": "fc", "params": {"min": -1, "max": 1}, "description": "相关系数在[-1,1]范围"},
+        {"check": "seed_roi_valid", "description": "种子ROI在脑掩模内 (建议手动检查)"},
+        {"check": "motion_threshold", "params": {"max_mm": 0.5}, "description": "FD<0.5mm (Power et al., 2012)"}
+      ],
+      "reference_parameters": {
+        "fisher_z": true,
+        "fisher_z_note": "Fisher z变换使相关系数近似正态分布，用于组间比较",
+        "anti_correlation_note": "负相关可能受全局信号回归影响 (Murphy et al., 2009)",
+        "anti_correlation_reference": "Murphy K, Birn RM, Handwerker DA, Jones TB, Bandettini PA (2009) The impact of global signal regression on resting state correlations, NeuroImage 44:893-905"
+      },
+      "acceptance_criteria": {
+        "description": "种子点功能连接合格判定标准",
+        "pass_conditions": [
+          {"field": "fc", "range": [-1, 1], "severity": "error"},
+          {"field": "fd_mean", "range": [0, 0.5], "severity": "error"},
+          {"check": "seed_roi_in_mask", "severity": "error"}
+        ],
+        "fail_conditions": [
+          {"field": "fc", "range_outside": [-1, 1], "severity": "error", "message": "FC超出[-1,1]范围"},
+          {"field": "fd_mean", "threshold": 0.5, "operator": ">", "severity": "error", "action": "exclude_subject"}
+        ],
+        "warning_conditions": []
+      }
+    },
+    "degree_centrality": {
+      "description": "度中心性",
+      "references": ["Buckner et al. (2009) Cortical hubs revealed by intrinsic functional connectivity, Journal of Neuroscience 29:1860-1873"],
+      "required_input_fields": ["input_files"],
+      "optional_input_fields": ["r_threshold", "mask", "binary_or_weighted"],
+      "expected_output_fields": ["dc_map", "bdc_map", "wdc_map"],
+      "expected_output_files": [
+        {"pattern": "*DC*.nii*", "description": "度中心性图", "required": true},
+        {"pattern": "*bDC*.nii*", "description": "二值化度中心性", "required": false},
+        {"pattern": "*wDC*.nii*", "description": "加权度中心性", "required": false}
+      ],
+      "quality_checks": [
+        {"check": "value_positive", "field": "dc", "description": "度中心性值为正"},
+        {"check": "value_range", "field": "sparsity_threshold", "params": {"min": 0.01, "max": 0.5}, "description": "稀疏度阈值在合理范围"},
+        {"check": "motion_threshold", "params": {"max_mm": 0.5}, "description": "FD<0.5mm (Power et al., 2012)"}
+      ],
+      "reference_parameters": {
+        "r_threshold": 0.25,
+        "binary_note": "二值化DC: 连接数; 加权DC: 连接强度之和",
+        "sparsity_note": "可用稀疏度替代固定阈值"
+      },
+      "acceptance_criteria": {
+        "description": "度中心性输出合格判定标准",
+        "pass_conditions": [
+          {"field": "dc", "range": [0, 9999999], "severity": "error", "note": "DC值应为正"},
+          {"field": "fd_mean", "range": [0, 0.5], "severity": "error"}
+        ],
+        "fail_conditions": [
+          {"field": "dc_has_negative", "expected": false, "severity": "error", "message": "DC含负值"},
+          {"field": "fd_mean", "threshold": 0.5, "operator": ">", "severity": "error", "action": "exclude_subject"}
+        ],
+        "warning_conditions": []
+      }
+    },
+    "vmhc": {
+      "description": "镜像同伦功能连接 (VMHC)",
+      "references": ["Zuo et al. (2010) Growing together and growing apart, Journal of Neuroscience 30:15034-15043"],
+      "required_input_fields": ["input_files"],
+      "optional_input_fields": ["mask", "symmetric_template"],
+      "expected_output_fields": ["vmhc_map", "zvmhc_map"],
+      "expected_output_files": [
+        {"pattern": "*VMHC*.nii*", "description": "VMHC图", "required": true},
+        {"pattern": "*zVMHC*.nii*", "description": "Fisher z变换后VMHC", "required": false}
+      ],
+      "quality_checks": [
+        {"check": "value_range", "field": "vmhc", "params": {"min": -1, "max": 1}, "description": "VMHC值在[-1,1]范围"},
+        {"check": "motion_threshold", "params": {"max_mm": 0.5}, "description": "FD<0.5mm"}
+      ],
+      "reference_parameters": {
+        "symmetric_template": "需要对称MNI模板",
+        "fisher_z": true
+      },
+      "acceptance_criteria": {
+        "description": "VMHC输出合格判定标准",
+        "pass_conditions": [
+          {"field": "vmhc", "range": [-1, 1], "severity": "error"},
+          {"field": "fd_mean", "range": [0, 0.5], "severity": "error"}
+        ],
+        "fail_conditions": [
+          {"field": "vmhc", "range_outside": [-1, 1], "severity": "error"},
+          {"field": "fd_mean", "threshold": 0.5, "operator": ">", "severity": "error", "action": "exclude_subject"}
+        ],
+        "warning_conditions": []
+      }
+    },
+    "granger_causality": {
+      "description": "Granger因果分析",
+      "references": ["Roebroeck et al. (2005) Mapping directed influence over the brain using Granger causality, NeuroImage 25:230-242"],
+      "required_input_fields": ["input_files", "seed_roi"],
+      "optional_input_fields": ["mask", "order", "method"],
+      "expected_output_fields": ["gc_map_x2y", "gc_map_y2x"],
+      "expected_output_files": [
+        {"pattern": "*GCA*.nii*", "description": "Granger因果图", "required": true}
+      ],
+      "quality_checks": [
+        {"check": "file_readable", "description": "GCA结果可读"},
+        {"check": "motion_threshold", "params": {"max_mm": 0.5}, "description": "FD<0.5mm"}
+      ],
+      "reference_parameters": {
+        "order": 1,
+        "method_note": "时间分辨率需足够高(TR<2s)以获得可靠因果推断"
+      },
+      "acceptance_criteria": {
+        "description": "Granger因果分析合格判定标准",
+        "pass_conditions": [
+          {"field": "fd_mean", "range": [0, 0.5], "severity": "error"}
+        ],
+        "fail_conditions": [
+          {"field": "fd_mean", "threshold": 0.5, "operator": ">", "severity": "error", "action": "exclude_subject"}
+        ],
+        "warning_conditions": []
+      }
+    }
+  }
+}

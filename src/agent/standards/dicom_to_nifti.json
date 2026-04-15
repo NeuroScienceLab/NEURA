@@ -1,0 +1,79 @@
+{
+  "tool_name": "dicom_to_nifti",
+  "description": "DICOM到NIfTI格式转换",
+  "version": "2.0",
+  "operations": {
+    "convert": {
+      "description": "DICOM转NIfTI (结构像/功能像)",
+      "references": ["Li et al. (2016) The first step for neuroimaging data analysis: DICOM to NIfTI conversion, Journal of Neuroscience Methods 264:47-56"],
+      "required_input_fields": ["input_dirs"],
+      "optional_input_fields": ["output_dir", "compress", "bids", "merge_2d"],
+      "expected_output_fields": ["output_files", "json_sidecars"],
+      "expected_output_files": [
+        {"pattern": "*.nii*", "description": "NIfTI文件", "required": true},
+        {"pattern": "*.json", "description": "JSON sidecar (BIDS兼容)", "required": false}
+      ],
+      "quality_checks": [
+        {"check": "file_readable", "description": "NIfTI文件可读"},
+        {"check": "orientation_valid", "description": "qform/sform方向信息有效 (建议手动检查)"},
+        {"check": "dimensions_preserved", "description": "图像维度合理"},
+        {"check": "value_range", "field": "voxel_size_mm", "params": {"min": 0.1, "max": 10}, "description": "体素大小在0.1-10mm范围"},
+        {"check": "tr_te_preserved", "description": "TR/TE参数保留 (建议手动检查)"},
+        {"check": "slice_order_valid", "description": "层序信息正确 (建议手动检查)"}
+      ],
+      "reference_parameters": {
+        "tool": "dcm2niix",
+        "compress": "y",
+        "bids": true,
+        "merge_2d": "auto",
+        "note": "推荐使用dcm2niix (Li et al., 2016)"
+      },
+      "acceptance_criteria": {
+        "description": "DICOM转NIfTI合格判定标准",
+        "pass_conditions": [
+          {"check": "file_readable", "pattern": "*.nii*", "severity": "error"},
+          {"field": "voxel_size_mm", "range": [0.1, 10], "severity": "error"},
+          {"check": "dimensions_reasonable", "severity": "error"}
+        ],
+        "fail_conditions": [
+          {"check": "output_file_missing", "pattern": "*.nii*", "severity": "error", "message": "NIfTI文件未生成"}
+        ],
+        "warning_conditions": []
+      }
+    },
+    "convert_dwi": {
+      "description": "DWI DICOM转NIfTI",
+      "required_input_fields": ["input_dirs"],
+      "optional_input_fields": ["output_dir", "compress"],
+      "expected_output_fields": ["output_files", "bvec_files", "bval_files", "json_sidecars"],
+      "expected_output_files": [
+        {"pattern": "*.nii*", "description": "DWI NIfTI文件", "required": true},
+        {"pattern": "*.bvec", "description": "梯度方向文件", "required": true},
+        {"pattern": "*.bval", "description": "b值文件", "required": true},
+        {"pattern": "*.json", "description": "JSON sidecar", "required": false}
+      ],
+      "quality_checks": [
+        {"check": "file_readable", "description": "NIfTI文件可读"},
+        {"check": "bvec_bval_match", "description": "bvec/bval与DWI体积数匹配"},
+        {"check": "gradient_direction_valid", "description": "梯度方向为单位向量 (建议手动检查)"},
+        {"check": "value_range", "field": "n_bval_shells", "params": {"min": 1}, "description": "至少1个b值壳层"},
+        {"check": "phase_encoding_direction", "description": "相位编码方向记录 (建议手动检查)"}
+      ],
+      "reference_parameters": {
+        "tool": "dcm2niix",
+        "note": "DWI转换需特别注意梯度方向的坐标系(scanner vs voxel)"
+      },
+      "acceptance_criteria": {
+        "description": "DWI DICOM转NIfTI合格判定标准",
+        "pass_conditions": [
+          {"check": "bvec_bval_match", "severity": "error"},
+          {"field": "n_bval_shells", "range": [1, 999], "severity": "error"}
+        ],
+        "fail_conditions": [
+          {"check": "bvec_bval_mismatch", "severity": "error", "message": "bvec/bval与DWI体积数不匹配"}
+        ],
+        "warning_conditions": []
+      }
+    }
+  }
+}

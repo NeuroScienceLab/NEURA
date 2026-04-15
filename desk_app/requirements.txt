@@ -1,0 +1,4 @@
+PySide6
+pymupdf
+markdown
+python-mermaid

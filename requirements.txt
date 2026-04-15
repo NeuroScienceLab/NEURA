@@ -1,0 +1,30 @@
+# 科研Agent依赖包 (LangGraph版本)
+
+# LangGraph框架
+langgraph>=0.2.0
+langchain-core>=0.3.0
+
+# HTTP客户端
+httpx>=0.25.0
+
+# 科学计算
+numpy>=1.24.0
+scipy>=1.11.0
+
+# 向量数据库
+faiss-cpu>=1.7.4
+
+# PDF解析
+pymupdf>=1.23.0
+
+# 医学影像
+pydicom>=2.4.0
+
+# 数据处理
+pandas>=2.0.0
+statsmodels>=0.14.0
+
+# 可选：神经影像处理
+# nibabel>=5.0.0
+# nilearn>=0.10.0
+# nipype>=1.8.0

@@ -82,6 +82,7 @@ For full end-to-end execution, NEURA can integrate with locally installed tools:
 - FreeSurfer
 - FSL
 - dcm2niix
+- Other neuroimaging processing tools
 
 The current implementation is primarily configured for a **Windows + WSL2** environment:
 

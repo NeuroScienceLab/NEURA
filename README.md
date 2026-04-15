@@ -162,6 +162,7 @@ The registry currently exposes the following analysis backends:
 - `fsl_analysis`
 - `python_stats`
 - `data_visualization`
+- .......
 
 Actual availability depends on your local installation and environment configuration.
 

@@ -11,7 +11,7 @@ The current codebase accompanies our manuscript submission. It includes the agen
 - Natural-language neuroimaging question to executable workflow
 - Dual knowledge grounding with a disease-region knowledge graph and a tool knowledge graph
 - Dual-layer retrieval over local papers and online literature
-- Multi-tool orchestration across structural MRI, diffusion MRI, and fMRI workflows
+- Multi-tool orchestration across structural MRI, diffusion MRI, and fMRI.... 
 - Expert-constrained Mixture-of-Experts Review (MoER) for plan, statistics, and report validation
 - Full run tracking with intermediate files, logs, generated code, and final reports
 - Both CLI and desktop application entry points
